@@ -15,6 +15,14 @@ type CryptoCardProps = {
   price: number;
 };
 
+interface Account {
+  id: string;
+  userId: string;
+  balance: number;
+  name: string;
+  createdAt: string;
+}
+
 function CryptoCard({ symbol, price }: CryptoCardProps) {
   return (
     <div className="w-72 rounded-2xl p-5 bg-linear-to-br from-gray-900 to-gray-800 shadow-lg border border-gray-700 text-white">
@@ -30,8 +38,54 @@ function CryptoCard({ symbol, price }: CryptoCardProps) {
 function Dashboard() {
   const navigate = useNavigate();
 
-  // ---------------- AUTH ----------------
   const [user, setUser] = useState<User | null>(null);
+
+  const [accountName, setAccountName] = useState<string>("");
+
+  const [balance, setBalance] = useState<number>(0);
+
+  const [accounts, setAccounts] = useState<Account[]>([]);
+
+  const handleCreateAccount = async () => {
+    try {
+      const response = await axios.post(
+        `${import.meta.env.VITE_BACKEND_URL}/accounts`,
+        {
+          name: accountName,
+          balance,
+        },
+        { withCredentials: true },
+      );
+
+      if (response.data.success) {
+        setAccounts((prev) => [...prev, response.data.data]);
+        setAccountName("");
+        setBalance(0);
+      }
+    } catch (error) {
+      if (error instanceof Error) alert(error.message);
+    }
+  };
+
+   const handleDelete = async (id:string) => {
+    try {
+      const response = await axios.delete(
+        `${import.meta.env.VITE_BACKEND_URL}/accounts/${id}`,
+        
+        { withCredentials: true },
+      );
+
+      if (response.data.success) {
+        const filtered=accounts.filter((account)=>{
+          return account.id!==id;
+        })  
+        setAccounts(filtered);
+        
+      }
+    } catch (error) {
+      if (error instanceof Error) alert(error.message);
+    }
+  };
 
   useEffect(() => {
     axios
@@ -43,7 +97,19 @@ function Dashboard() {
         else navigate("/signin");
       })
       .catch(() => navigate("/signin"));
-  }, [navigate]);
+
+
+      axios
+      .get(`${import.meta.env.VITE_BACKEND_URL}/accounts`, {
+        withCredentials: true,
+      })
+      .then((res) => {
+        if (res.data.success) setAccounts(res.data.data);
+      })
+      .catch((err) => {if(err instanceof Error){
+        console.log(err)
+      }});
+  }, []);
 
   // ---------------- REDUX PRICES ----------------
   const prices = useSelector((state: RootState) => state.market);
@@ -77,10 +143,92 @@ function Dashboard() {
         <CryptoCard symbol="BTC/USD" price={btcPrice} />
       </div>
 
-      {/* DEBUG */}
-      <div className="mt-6 text-gray-600 text-sm">
-        {JSON.stringify(prices)}
+      <div className="flex w-screen min-h-screen bg-gray-950 text-white">
+
+  {/* LEFT PANEL - CREATE ACCOUNT */}
+  <div className="w-1/3 p-8 border-r border-gray-800">
+    <h1 className="text-2xl font-bold mb-6">Start Paper Trading</h1>
+
+    <div className="space-y-5">
+
+      <div>
+        <label className="block text-sm text-gray-400 mb-1">
+          Account Name
+        </label>
+        <input
+          type="text"
+          placeholder="Intraday, Swing, etc..."
+          value={accountName}
+          onChange={(e) => setAccountName(e.target.value)}
+          className="w-full px-4 py-2 bg-gray-900 border border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+        />
       </div>
+
+      <div>
+        <label className="block text-sm text-gray-400 mb-1">
+          A/C Balance
+        </label>
+        <input
+          type="number"
+          placeholder="$1000"
+          value={balance}
+          onChange={(e) => setBalance(parseFloat(e.target.value))}
+          className="w-full px-4 py-2 bg-gray-900 border border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+        />
+      </div>
+
+      <button
+        onClick={handleCreateAccount}
+        className="w-full bg-blue-600 hover:bg-blue-700 transition-all py-2 rounded-lg font-semibold"
+      >
+        Create Account
+      </button>
+    </div>
+  </div>
+
+  {/* RIGHT PANEL - ACCOUNTS LIST */}
+  <div className="w-2/3 p-8 bg-gray-950">
+    <h2 className="text-xl font-semibold mb-6">Your Accounts</h2>
+
+    {accounts.length > 0 ? (
+      <div className="grid gap-4">
+        {accounts.map((account) => (
+          <div
+            key={account.id}
+            className="bg-gray-900 border border-gray-800 rounded-xl p-5 flex justify-between items-center hover:border-gray-700 transition"
+          >
+            <div>
+              <h1 className="text-lg font-bold">{account.name}</h1>
+              <p className="text-sm text-gray-400">
+                Balance: <span className="text-green-400">${account.balance}</span>
+              </p>
+            </div>
+
+            <div className="flex gap-2">
+              <button
+                onClick={() => navigate(`/accounts/${account.id}`)}
+                className="px-4 py-2 bg-green-600 hover:bg-green-700 rounded-lg text-sm font-medium"
+              >
+                Trade
+              </button>
+
+              <button
+                onClick={() => handleDelete(account.id)}
+                className="px-4 py-2 bg-red-600 hover:bg-red-700 rounded-lg text-sm font-medium"
+              >
+                Delete
+              </button>
+            </div>
+          </div>
+        ))}
+      </div>
+    ) : (
+      <div className="text-gray-500 mt-10">
+        No accounts found. Create one and start trading 🚀
+      </div>
+    )}
+  </div>
+</div>
     </div>
   );
 }

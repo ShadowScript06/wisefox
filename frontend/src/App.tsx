@@ -8,6 +8,7 @@ import { closeWS, openWS } from "./services/ws/marketSocket";
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import type { AppDispatch } from "./redux/store";
+import AccountPage from "./pages/AccountPage";
 
 function App() {
   const dispatch=useDispatch<AppDispatch>();
@@ -32,6 +33,8 @@ function App() {
         <Route path="/authsuccess" element={<AuthSuccess />} />
 
         <Route path="/dashboard" element={<Dashboard />} />
+
+        <Route path="/accounts/:id" element={<AccountPage />} />
       </Routes>
     </div>
   );
