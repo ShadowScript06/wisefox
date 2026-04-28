@@ -10,4 +10,8 @@
  */
 export type * from './models/User'
 export type * from './models/Account'
+export type * from './models/Order'
+export type * from './models/Position'
+export type * from './models/Trade'
+export type * from './models/AuditLog'
 export type * from './commonInputTypes'

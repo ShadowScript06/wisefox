@@ -9,7 +9,43 @@
 * 🟢 You can import this file directly.
 */
 
+export const AuditType = {
+  ORDER_PLACED: 'ORDER_PLACED',
+  ORDER_FILLED: 'ORDER_FILLED',
+  ORDER_CANCELLED: 'ORDER_CANCELLED',
+  ORDER_EXPIRED: 'ORDER_EXPIRED',
+  POSITION_OPENED: 'POSITION_OPENED',
+  POSITION_CLOSED: 'POSITION_CLOSED',
+  POSITION_FLIPPED: 'POSITION_FLIPPED',
+  MARGIN_CALL: 'MARGIN_CALL',
+  LIQUIDATION: 'LIQUIDATION'
+} as const
+
+export type AuditType = (typeof AuditType)[keyof typeof AuditType]
 
 
-// This file is empty because there are no enums in the schema.
-export {}
+export const Direction = {
+  LONG: 'LONG',
+  SHORT: 'SHORT'
+} as const
+
+export type Direction = (typeof Direction)[keyof typeof Direction]
+
+
+export const orderType = {
+  MARKET: 'MARKET',
+  LIMIT: 'LIMIT'
+} as const
+
+export type orderType = (typeof orderType)[keyof typeof orderType]
+
+
+export const OrderStatus = {
+  PENDING: 'PENDING',
+  FILLED: 'FILLED',
+  PARTIALLY_FILLED: 'PARTIALLY_FILLED',
+  CANCELLED: 'CANCELLED',
+  EXPIRED: 'EXPIRED'
+} as const
+
+export type OrderStatus = (typeof OrderStatus)[keyof typeof OrderStatus]

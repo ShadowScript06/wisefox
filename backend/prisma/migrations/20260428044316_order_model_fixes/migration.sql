@@ -1,0 +1,4 @@
+-- AlterTable
+ALTER TABLE "Order" ALTER COLUMN "filledQty" SET DEFAULT 0,
+ALTER COLUMN "filledPrice" DROP NOT NULL,
+ALTER COLUMN "cancelledAt" DROP NOT NULL;

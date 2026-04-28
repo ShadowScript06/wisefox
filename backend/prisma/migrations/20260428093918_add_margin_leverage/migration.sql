@@ -1,0 +1,9 @@
+-- AlterTable
+ALTER TABLE "Account" ADD COLUMN     "marginUser" DOUBLE PRECISION NOT NULL DEFAULT 0;
+
+-- AlterTable
+ALTER TABLE "Order" ADD COLUMN     "leverage" INTEGER NOT NULL DEFAULT 1;
+
+-- AlterTable
+ALTER TABLE "Position" ADD COLUMN     "leverage" INTEGER NOT NULL DEFAULT 1,
+ADD COLUMN     "marginUsed" DOUBLE PRECISION NOT NULL DEFAULT 0;

@@ -1,0 +1,17 @@
+-- CreateEnum
+CREATE TYPE "AuditType" AS ENUM ('ORDER_PLACED', 'ORDER_FILLED', 'ORDER_CANCELLED', 'ORDER_EXPIRED', 'POSITION_OPENED', 'POSITION_CLOSED', 'POSITION_FLIPPED', 'MARGIN_CALL', 'LIQUIDATION');
+
+-- CreateTable
+CREATE TABLE "AuditLog" (
+    "id" TEXT NOT NULL,
+    "accountId" TEXT NOT NULL,
+    "type" "AuditType" NOT NULL,
+    "message" TEXT NOT NULL,
+    "meta" JSONB,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "AuditLog_pkey" PRIMARY KEY ("id")
+);
+
+-- AddForeignKey
+ALTER TABLE "AuditLog" ADD CONSTRAINT "AuditLog_accountId_fkey" FOREIGN KEY ("accountId") REFERENCES "Account"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

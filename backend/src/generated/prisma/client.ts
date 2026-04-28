@@ -49,3 +49,23 @@ export type User = Prisma.UserModel
  * 
  */
 export type Account = Prisma.AccountModel
+/**
+ * Model Order
+ * 
+ */
+export type Order = Prisma.OrderModel
+/**
+ * Model Position
+ * 
+ */
+export type Position = Prisma.PositionModel
+/**
+ * Model Trade
+ * 
+ */
+export type Trade = Prisma.TradeModel
+/**
+ * Model AuditLog
+ * 
+ */
+export type AuditLog = Prisma.AuditLogModel

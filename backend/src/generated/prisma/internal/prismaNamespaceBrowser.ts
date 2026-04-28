@@ -52,7 +52,11 @@ export const AnyNull = runtime.AnyNull
 
 export const ModelName = {
   User: 'User',
-  Account: 'Account'
+  Account: 'Account',
+  Order: 'Order',
+  Position: 'Position',
+  Trade: 'Trade',
+  AuditLog: 'AuditLog'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -88,10 +92,90 @@ export const AccountScalarFieldEnum = {
   id: 'id',
   name: 'name',
   balance: 'balance',
-  userId: 'userId'
+  userId: 'userId',
+  createdAt: 'createdAt',
+  marginUsed: 'marginUsed'
 } as const
 
 export type AccountScalarFieldEnum = (typeof AccountScalarFieldEnum)[keyof typeof AccountScalarFieldEnum]
+
+
+export const OrderScalarFieldEnum = {
+  id: 'id',
+  accountId: 'accountId',
+  symbol: 'symbol',
+  direction: 'direction',
+  status: 'status',
+  quantity: 'quantity',
+  type: 'type',
+  price: 'price',
+  filledQty: 'filledQty',
+  filledPrice: 'filledPrice',
+  expiresAt: 'expiresAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  cancelledAt: 'cancelledAt',
+  leverage: 'leverage',
+  slPrice: 'slPrice',
+  slQty: 'slQty',
+  tpPrice: 'tpPrice',
+  tpQty: 'tpQty',
+  isBracket: 'isBracket'
+} as const
+
+export type OrderScalarFieldEnum = (typeof OrderScalarFieldEnum)[keyof typeof OrderScalarFieldEnum]
+
+
+export const PositionScalarFieldEnum = {
+  id: 'id',
+  accountId: 'accountId',
+  symbol: 'symbol',
+  direction: 'direction',
+  quantity: 'quantity',
+  avgEntryPrice: 'avgEntryPrice',
+  realizedPnl: 'realizedPnl',
+  isOpen: 'isOpen',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  leverage: 'leverage',
+  marginUsed: 'marginUsed',
+  slPrice: 'slPrice',
+  slQty: 'slQty',
+  tpPrice: 'tpPrice',
+  tpQty: 'tpQty',
+  slHit: 'slHit',
+  tpHit: 'tpHit'
+} as const
+
+export type PositionScalarFieldEnum = (typeof PositionScalarFieldEnum)[keyof typeof PositionScalarFieldEnum]
+
+
+export const TradeScalarFieldEnum = {
+  id: 'id',
+  orderId: 'orderId',
+  accountId: 'accountId',
+  symbol: 'symbol',
+  direction: 'direction',
+  quantity: 'quantity',
+  price: 'price',
+  realizedPnl: 'realizedPnl',
+  createdAt: 'createdAt',
+  trigger: 'trigger'
+} as const
+
+export type TradeScalarFieldEnum = (typeof TradeScalarFieldEnum)[keyof typeof TradeScalarFieldEnum]
+
+
+export const AuditLogScalarFieldEnum = {
+  id: 'id',
+  accountId: 'accountId',
+  type: 'type',
+  message: 'message',
+  meta: 'meta',
+  createdAt: 'createdAt'
+} as const
+
+export type AuditLogScalarFieldEnum = (typeof AuditLogScalarFieldEnum)[keyof typeof AuditLogScalarFieldEnum]
 
 
 export const SortOrder = {
@@ -100,6 +184,14 @@ export const SortOrder = {
 } as const
 
 export type SortOrder = (typeof SortOrder)[keyof typeof SortOrder]
+
+
+export const NullableJsonNullValueInput = {
+  DbNull: DbNull,
+  JsonNull: JsonNull
+} as const
+
+export type NullableJsonNullValueInput = (typeof NullableJsonNullValueInput)[keyof typeof NullableJsonNullValueInput]
 
 
 export const QueryMode = {
@@ -116,4 +208,13 @@ export const NullsOrder = {
 } as const
 
 export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder]
+
+
+export const JsonNullValueFilter = {
+  DbNull: DbNull,
+  JsonNull: JsonNull,
+  AnyNull: AnyNull
+} as const
+
+export type JsonNullValueFilter = (typeof JsonNullValueFilter)[keyof typeof JsonNullValueFilter]
 

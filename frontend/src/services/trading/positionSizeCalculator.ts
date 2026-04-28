@@ -41,7 +41,7 @@ export function calculateTrade(input: TradeInput): TradeResult {
   let riskGst: number | undefined;
   let riskCharges: number | undefined;
 
-  if (stopLoss != null) {
+  if (stopLoss != null && stopLoss != 0) {
     if (direction === "LONG") {
       risk = ((entryPrice - stopLoss) * contracts) / 1000;
     } else {
@@ -62,7 +62,7 @@ export function calculateTrade(input: TradeInput): TradeResult {
   let profitGst: number | undefined;
   let profitCharges: number | undefined;
 
-  if (target != null) {
+  if (target != null && target != 0) {
     if (direction === "LONG") {
       profit = ((target - entryPrice) * contracts) / 1000;
     } else {

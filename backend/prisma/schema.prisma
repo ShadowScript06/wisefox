@@ -20,7 +20,7 @@ model User{
   provider String
   googleId String?
   createdAt DateTime @default(now())
-  account Account[]
+  accounts Account[]
 }
 
 model Account{
@@ -30,4 +30,112 @@ model Account{
   userId String
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
   createdAt DateTime @default(now())
+  orders Order[]
+  positions Position[]
+  marginUsed Float @default(0)
+  auditLogs AuditLog[]
+}
+
+model Order{
+  id String @id @default(uuid())
+  accountId String
+  account Account @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  symbol String
+  direction Direction
+  status OrderStatus @default(PENDING)
+  quantity Int
+  type orderType
+  price Float
+  filledQty Int @default(0)
+  filledPrice Float?
+  expiresAt DateTime?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  cancelledAt DateTime?
+  trades Trade[]
+  leverage Int @default(1)
+   slPrice     Float?    // for bracket orders
+  slQty       Float?
+  tpPrice     Float?
+  tpQty       Float?
+  isBracket   Boolean   @default(false)
+}
+
+
+model Position{
+  id String @id @default(uuid())
+  accountId String
+  account Account @relation(fields: [accountId], references: [id], onDelete:Cascade)
+  symbol String
+  direction Direction
+  quantity Int
+  avgEntryPrice Float
+  realizedPnl Float @default(0)
+  isOpen Boolean @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  leverage Int @default(1)
+  marginUsed Float @default(0)
+  slPrice     Float?    // stop loss price
+  slQty       Float?    // how many to close on SL hit
+  tpPrice     Float?    // take profit price
+  tpQty       Float?    // how many to close on TP hit
+  slHit       Boolean   @default(false)  // already triggered?
+  tpHit       Boolean   @default(false)
+
+
+  @@unique([accountId,symbol,isOpen])
+}
+model Trade{
+  id String @id @default(uuid())
+  orderId String?
+  order Order? @relation(fields: [orderId], references: [id] , onDelete: Cascade)
+  accountId String
+  symbol String
+  direction Direction
+  quantity Int
+  price Float
+  realizedPnl Float @default(0)
+  createdAt DateTime @default(now())
+  trigger   String?   
+
+}
+
+model AuditLog {
+  id        String      @id @default(uuid())
+  accountId String
+  account   Account     @relation(fields: [accountId], references: [id])
+  type      AuditType
+  message   String
+  meta      Json?       // any extra data — prices, quantities etc
+  createdAt DateTime    @default(now())
+}
+
+enum AuditType {
+  ORDER_PLACED
+  ORDER_FILLED
+  ORDER_CANCELLED
+  ORDER_EXPIRED
+  POSITION_OPENED
+  POSITION_CLOSED
+  POSITION_FLIPPED
+  MARGIN_CALL
+  LIQUIDATION
+}
+
+enum Direction{
+  LONG
+  SHORT
+}
+
+enum orderType{
+  MARKET
+  LIMIT
+}
+enum OrderStatus{
+  PENDING
+  FILLED
+  PARTIALLY_FILLED
+  CANCELLED
+  EXPIRED
 }
