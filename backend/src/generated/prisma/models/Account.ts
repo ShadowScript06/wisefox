@@ -29,11 +29,15 @@ export type AggregateAccount = {
 export type AccountAvgAggregateOutputType = {
   balance: number | null
   marginUsed: number | null
+  netPnl: number | null
+  charges: number | null
 }
 
 export type AccountSumAggregateOutputType = {
   balance: number | null
   marginUsed: number | null
+  netPnl: number | null
+  charges: number | null
 }
 
 export type AccountMinAggregateOutputType = {
@@ -43,6 +47,8 @@ export type AccountMinAggregateOutputType = {
   userId: string | null
   createdAt: Date | null
   marginUsed: number | null
+  netPnl: number | null
+  charges: number | null
 }
 
 export type AccountMaxAggregateOutputType = {
@@ -52,6 +58,8 @@ export type AccountMaxAggregateOutputType = {
   userId: string | null
   createdAt: Date | null
   marginUsed: number | null
+  netPnl: number | null
+  charges: number | null
 }
 
 export type AccountCountAggregateOutputType = {
@@ -61,6 +69,8 @@ export type AccountCountAggregateOutputType = {
   userId: number
   createdAt: number
   marginUsed: number
+  netPnl: number
+  charges: number
   _all: number
 }
 
@@ -68,11 +78,15 @@ export type AccountCountAggregateOutputType = {
 export type AccountAvgAggregateInputType = {
   balance?: true
   marginUsed?: true
+  netPnl?: true
+  charges?: true
 }
 
 export type AccountSumAggregateInputType = {
   balance?: true
   marginUsed?: true
+  netPnl?: true
+  charges?: true
 }
 
 export type AccountMinAggregateInputType = {
@@ -82,6 +96,8 @@ export type AccountMinAggregateInputType = {
   userId?: true
   createdAt?: true
   marginUsed?: true
+  netPnl?: true
+  charges?: true
 }
 
 export type AccountMaxAggregateInputType = {
@@ -91,6 +107,8 @@ export type AccountMaxAggregateInputType = {
   userId?: true
   createdAt?: true
   marginUsed?: true
+  netPnl?: true
+  charges?: true
 }
 
 export type AccountCountAggregateInputType = {
@@ -100,6 +118,8 @@ export type AccountCountAggregateInputType = {
   userId?: true
   createdAt?: true
   marginUsed?: true
+  netPnl?: true
+  charges?: true
   _all?: true
 }
 
@@ -196,6 +216,8 @@ export type AccountGroupByOutputType = {
   userId: string
   createdAt: Date
   marginUsed: number
+  netPnl: number | null
+  charges: number | null
   _count: AccountCountAggregateOutputType | null
   _avg: AccountAvgAggregateOutputType | null
   _sum: AccountSumAggregateOutputType | null
@@ -228,6 +250,8 @@ export type AccountWhereInput = {
   userId?: Prisma.StringFilter<"Account"> | string
   createdAt?: Prisma.DateTimeFilter<"Account"> | Date | string
   marginUsed?: Prisma.FloatFilter<"Account"> | number
+  netPnl?: Prisma.FloatNullableFilter<"Account"> | number | null
+  charges?: Prisma.FloatNullableFilter<"Account"> | number | null
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   orders?: Prisma.OrderListRelationFilter
   positions?: Prisma.PositionListRelationFilter
@@ -241,6 +265,8 @@ export type AccountOrderByWithRelationInput = {
   userId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   marginUsed?: Prisma.SortOrder
+  netPnl?: Prisma.SortOrderInput | Prisma.SortOrder
+  charges?: Prisma.SortOrderInput | Prisma.SortOrder
   user?: Prisma.UserOrderByWithRelationInput
   orders?: Prisma.OrderOrderByRelationAggregateInput
   positions?: Prisma.PositionOrderByRelationAggregateInput
@@ -257,6 +283,8 @@ export type AccountWhereUniqueInput = Prisma.AtLeast<{
   userId?: Prisma.StringFilter<"Account"> | string
   createdAt?: Prisma.DateTimeFilter<"Account"> | Date | string
   marginUsed?: Prisma.FloatFilter<"Account"> | number
+  netPnl?: Prisma.FloatNullableFilter<"Account"> | number | null
+  charges?: Prisma.FloatNullableFilter<"Account"> | number | null
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   orders?: Prisma.OrderListRelationFilter
   positions?: Prisma.PositionListRelationFilter
@@ -270,6 +298,8 @@ export type AccountOrderByWithAggregationInput = {
   userId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   marginUsed?: Prisma.SortOrder
+  netPnl?: Prisma.SortOrderInput | Prisma.SortOrder
+  charges?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.AccountCountOrderByAggregateInput
   _avg?: Prisma.AccountAvgOrderByAggregateInput
   _max?: Prisma.AccountMaxOrderByAggregateInput
@@ -287,6 +317,8 @@ export type AccountScalarWhereWithAggregatesInput = {
   userId?: Prisma.StringWithAggregatesFilter<"Account"> | string
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Account"> | Date | string
   marginUsed?: Prisma.FloatWithAggregatesFilter<"Account"> | number
+  netPnl?: Prisma.FloatNullableWithAggregatesFilter<"Account"> | number | null
+  charges?: Prisma.FloatNullableWithAggregatesFilter<"Account"> | number | null
 }
 
 export type AccountCreateInput = {
@@ -295,6 +327,8 @@ export type AccountCreateInput = {
   balance: number
   createdAt?: Date | string
   marginUsed?: number
+  netPnl?: number | null
+  charges?: number | null
   user: Prisma.UserCreateNestedOneWithoutAccountsInput
   orders?: Prisma.OrderCreateNestedManyWithoutAccountInput
   positions?: Prisma.PositionCreateNestedManyWithoutAccountInput
@@ -308,6 +342,8 @@ export type AccountUncheckedCreateInput = {
   userId: string
   createdAt?: Date | string
   marginUsed?: number
+  netPnl?: number | null
+  charges?: number | null
   orders?: Prisma.OrderUncheckedCreateNestedManyWithoutAccountInput
   positions?: Prisma.PositionUncheckedCreateNestedManyWithoutAccountInput
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutAccountInput
@@ -319,6 +355,8 @@ export type AccountUpdateInput = {
   balance?: Prisma.FloatFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   marginUsed?: Prisma.FloatFieldUpdateOperationsInput | number
+  netPnl?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  charges?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   user?: Prisma.UserUpdateOneRequiredWithoutAccountsNestedInput
   orders?: Prisma.OrderUpdateManyWithoutAccountNestedInput
   positions?: Prisma.PositionUpdateManyWithoutAccountNestedInput
@@ -332,6 +370,8 @@ export type AccountUncheckedUpdateInput = {
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   marginUsed?: Prisma.FloatFieldUpdateOperationsInput | number
+  netPnl?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  charges?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   orders?: Prisma.OrderUncheckedUpdateManyWithoutAccountNestedInput
   positions?: Prisma.PositionUncheckedUpdateManyWithoutAccountNestedInput
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutAccountNestedInput
@@ -344,6 +384,8 @@ export type AccountCreateManyInput = {
   userId: string
   createdAt?: Date | string
   marginUsed?: number
+  netPnl?: number | null
+  charges?: number | null
 }
 
 export type AccountUpdateManyMutationInput = {
@@ -352,6 +394,8 @@ export type AccountUpdateManyMutationInput = {
   balance?: Prisma.FloatFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   marginUsed?: Prisma.FloatFieldUpdateOperationsInput | number
+  netPnl?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  charges?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
 }
 
 export type AccountUncheckedUpdateManyInput = {
@@ -361,6 +405,8 @@ export type AccountUncheckedUpdateManyInput = {
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   marginUsed?: Prisma.FloatFieldUpdateOperationsInput | number
+  netPnl?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  charges?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
 }
 
 export type AccountListRelationFilter = {
@@ -380,11 +426,15 @@ export type AccountCountOrderByAggregateInput = {
   userId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   marginUsed?: Prisma.SortOrder
+  netPnl?: Prisma.SortOrder
+  charges?: Prisma.SortOrder
 }
 
 export type AccountAvgOrderByAggregateInput = {
   balance?: Prisma.SortOrder
   marginUsed?: Prisma.SortOrder
+  netPnl?: Prisma.SortOrder
+  charges?: Prisma.SortOrder
 }
 
 export type AccountMaxOrderByAggregateInput = {
@@ -394,6 +444,8 @@ export type AccountMaxOrderByAggregateInput = {
   userId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   marginUsed?: Prisma.SortOrder
+  netPnl?: Prisma.SortOrder
+  charges?: Prisma.SortOrder
 }
 
 export type AccountMinOrderByAggregateInput = {
@@ -403,11 +455,15 @@ export type AccountMinOrderByAggregateInput = {
   userId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   marginUsed?: Prisma.SortOrder
+  netPnl?: Prisma.SortOrder
+  charges?: Prisma.SortOrder
 }
 
 export type AccountSumOrderByAggregateInput = {
   balance?: Prisma.SortOrder
   marginUsed?: Prisma.SortOrder
+  netPnl?: Prisma.SortOrder
+  charges?: Prisma.SortOrder
 }
 
 export type AccountScalarRelationFilter = {
@@ -465,6 +521,14 @@ export type FloatFieldUpdateOperationsInput = {
   divide?: number
 }
 
+export type NullableFloatFieldUpdateOperationsInput = {
+  set?: number | null
+  increment?: number
+  decrement?: number
+  multiply?: number
+  divide?: number
+}
+
 export type AccountCreateNestedOneWithoutOrdersInput = {
   create?: Prisma.XOR<Prisma.AccountCreateWithoutOrdersInput, Prisma.AccountUncheckedCreateWithoutOrdersInput>
   connectOrCreate?: Prisma.AccountCreateOrConnectWithoutOrdersInput
@@ -513,6 +577,8 @@ export type AccountCreateWithoutUserInput = {
   balance: number
   createdAt?: Date | string
   marginUsed?: number
+  netPnl?: number | null
+  charges?: number | null
   orders?: Prisma.OrderCreateNestedManyWithoutAccountInput
   positions?: Prisma.PositionCreateNestedManyWithoutAccountInput
   auditLogs?: Prisma.AuditLogCreateNestedManyWithoutAccountInput
@@ -524,6 +590,8 @@ export type AccountUncheckedCreateWithoutUserInput = {
   balance: number
   createdAt?: Date | string
   marginUsed?: number
+  netPnl?: number | null
+  charges?: number | null
   orders?: Prisma.OrderUncheckedCreateNestedManyWithoutAccountInput
   positions?: Prisma.PositionUncheckedCreateNestedManyWithoutAccountInput
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutAccountInput
@@ -565,6 +633,8 @@ export type AccountScalarWhereInput = {
   userId?: Prisma.StringFilter<"Account"> | string
   createdAt?: Prisma.DateTimeFilter<"Account"> | Date | string
   marginUsed?: Prisma.FloatFilter<"Account"> | number
+  netPnl?: Prisma.FloatNullableFilter<"Account"> | number | null
+  charges?: Prisma.FloatNullableFilter<"Account"> | number | null
 }
 
 export type AccountCreateWithoutOrdersInput = {
@@ -573,6 +643,8 @@ export type AccountCreateWithoutOrdersInput = {
   balance: number
   createdAt?: Date | string
   marginUsed?: number
+  netPnl?: number | null
+  charges?: number | null
   user: Prisma.UserCreateNestedOneWithoutAccountsInput
   positions?: Prisma.PositionCreateNestedManyWithoutAccountInput
   auditLogs?: Prisma.AuditLogCreateNestedManyWithoutAccountInput
@@ -585,6 +657,8 @@ export type AccountUncheckedCreateWithoutOrdersInput = {
   userId: string
   createdAt?: Date | string
   marginUsed?: number
+  netPnl?: number | null
+  charges?: number | null
   positions?: Prisma.PositionUncheckedCreateNestedManyWithoutAccountInput
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutAccountInput
 }
@@ -611,6 +685,8 @@ export type AccountUpdateWithoutOrdersInput = {
   balance?: Prisma.FloatFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   marginUsed?: Prisma.FloatFieldUpdateOperationsInput | number
+  netPnl?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  charges?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   user?: Prisma.UserUpdateOneRequiredWithoutAccountsNestedInput
   positions?: Prisma.PositionUpdateManyWithoutAccountNestedInput
   auditLogs?: Prisma.AuditLogUpdateManyWithoutAccountNestedInput
@@ -623,6 +699,8 @@ export type AccountUncheckedUpdateWithoutOrdersInput = {
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   marginUsed?: Prisma.FloatFieldUpdateOperationsInput | number
+  netPnl?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  charges?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   positions?: Prisma.PositionUncheckedUpdateManyWithoutAccountNestedInput
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutAccountNestedInput
 }
@@ -633,6 +711,8 @@ export type AccountCreateWithoutPositionsInput = {
   balance: number
   createdAt?: Date | string
   marginUsed?: number
+  netPnl?: number | null
+  charges?: number | null
   user: Prisma.UserCreateNestedOneWithoutAccountsInput
   orders?: Prisma.OrderCreateNestedManyWithoutAccountInput
   auditLogs?: Prisma.AuditLogCreateNestedManyWithoutAccountInput
@@ -645,6 +725,8 @@ export type AccountUncheckedCreateWithoutPositionsInput = {
   userId: string
   createdAt?: Date | string
   marginUsed?: number
+  netPnl?: number | null
+  charges?: number | null
   orders?: Prisma.OrderUncheckedCreateNestedManyWithoutAccountInput
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutAccountInput
 }
@@ -671,6 +753,8 @@ export type AccountUpdateWithoutPositionsInput = {
   balance?: Prisma.FloatFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   marginUsed?: Prisma.FloatFieldUpdateOperationsInput | number
+  netPnl?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  charges?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   user?: Prisma.UserUpdateOneRequiredWithoutAccountsNestedInput
   orders?: Prisma.OrderUpdateManyWithoutAccountNestedInput
   auditLogs?: Prisma.AuditLogUpdateManyWithoutAccountNestedInput
@@ -683,6 +767,8 @@ export type AccountUncheckedUpdateWithoutPositionsInput = {
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   marginUsed?: Prisma.FloatFieldUpdateOperationsInput | number
+  netPnl?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  charges?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   orders?: Prisma.OrderUncheckedUpdateManyWithoutAccountNestedInput
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutAccountNestedInput
 }
@@ -693,6 +779,8 @@ export type AccountCreateWithoutAuditLogsInput = {
   balance: number
   createdAt?: Date | string
   marginUsed?: number
+  netPnl?: number | null
+  charges?: number | null
   user: Prisma.UserCreateNestedOneWithoutAccountsInput
   orders?: Prisma.OrderCreateNestedManyWithoutAccountInput
   positions?: Prisma.PositionCreateNestedManyWithoutAccountInput
@@ -705,6 +793,8 @@ export type AccountUncheckedCreateWithoutAuditLogsInput = {
   userId: string
   createdAt?: Date | string
   marginUsed?: number
+  netPnl?: number | null
+  charges?: number | null
   orders?: Prisma.OrderUncheckedCreateNestedManyWithoutAccountInput
   positions?: Prisma.PositionUncheckedCreateNestedManyWithoutAccountInput
 }
@@ -731,6 +821,8 @@ export type AccountUpdateWithoutAuditLogsInput = {
   balance?: Prisma.FloatFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   marginUsed?: Prisma.FloatFieldUpdateOperationsInput | number
+  netPnl?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  charges?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   user?: Prisma.UserUpdateOneRequiredWithoutAccountsNestedInput
   orders?: Prisma.OrderUpdateManyWithoutAccountNestedInput
   positions?: Prisma.PositionUpdateManyWithoutAccountNestedInput
@@ -743,6 +835,8 @@ export type AccountUncheckedUpdateWithoutAuditLogsInput = {
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   marginUsed?: Prisma.FloatFieldUpdateOperationsInput | number
+  netPnl?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  charges?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   orders?: Prisma.OrderUncheckedUpdateManyWithoutAccountNestedInput
   positions?: Prisma.PositionUncheckedUpdateManyWithoutAccountNestedInput
 }
@@ -753,6 +847,8 @@ export type AccountCreateManyUserInput = {
   balance: number
   createdAt?: Date | string
   marginUsed?: number
+  netPnl?: number | null
+  charges?: number | null
 }
 
 export type AccountUpdateWithoutUserInput = {
@@ -761,6 +857,8 @@ export type AccountUpdateWithoutUserInput = {
   balance?: Prisma.FloatFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   marginUsed?: Prisma.FloatFieldUpdateOperationsInput | number
+  netPnl?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  charges?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   orders?: Prisma.OrderUpdateManyWithoutAccountNestedInput
   positions?: Prisma.PositionUpdateManyWithoutAccountNestedInput
   auditLogs?: Prisma.AuditLogUpdateManyWithoutAccountNestedInput
@@ -772,6 +870,8 @@ export type AccountUncheckedUpdateWithoutUserInput = {
   balance?: Prisma.FloatFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   marginUsed?: Prisma.FloatFieldUpdateOperationsInput | number
+  netPnl?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  charges?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   orders?: Prisma.OrderUncheckedUpdateManyWithoutAccountNestedInput
   positions?: Prisma.PositionUncheckedUpdateManyWithoutAccountNestedInput
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutAccountNestedInput
@@ -783,6 +883,8 @@ export type AccountUncheckedUpdateManyWithoutUserInput = {
   balance?: Prisma.FloatFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   marginUsed?: Prisma.FloatFieldUpdateOperationsInput | number
+  netPnl?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  charges?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
 }
 
 
@@ -841,6 +943,8 @@ export type AccountSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   userId?: boolean
   createdAt?: boolean
   marginUsed?: boolean
+  netPnl?: boolean
+  charges?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   orders?: boolean | Prisma.Account$ordersArgs<ExtArgs>
   positions?: boolean | Prisma.Account$positionsArgs<ExtArgs>
@@ -855,6 +959,8 @@ export type AccountSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exten
   userId?: boolean
   createdAt?: boolean
   marginUsed?: boolean
+  netPnl?: boolean
+  charges?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["account"]>
 
@@ -865,6 +971,8 @@ export type AccountSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exten
   userId?: boolean
   createdAt?: boolean
   marginUsed?: boolean
+  netPnl?: boolean
+  charges?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["account"]>
 
@@ -875,9 +983,11 @@ export type AccountSelectScalar = {
   userId?: boolean
   createdAt?: boolean
   marginUsed?: boolean
+  netPnl?: boolean
+  charges?: boolean
 }
 
-export type AccountOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "balance" | "userId" | "createdAt" | "marginUsed", ExtArgs["result"]["account"]>
+export type AccountOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "balance" | "userId" | "createdAt" | "marginUsed" | "netPnl" | "charges", ExtArgs["result"]["account"]>
 export type AccountInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   orders?: boolean | Prisma.Account$ordersArgs<ExtArgs>
@@ -907,6 +1017,8 @@ export type $AccountPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     userId: string
     createdAt: Date
     marginUsed: number
+    netPnl: number | null
+    charges: number | null
   }, ExtArgs["result"]["account"]>
   composites: {}
 }
@@ -1340,6 +1452,8 @@ export interface AccountFieldRefs {
   readonly userId: Prisma.FieldRef<"Account", 'String'>
   readonly createdAt: Prisma.FieldRef<"Account", 'DateTime'>
   readonly marginUsed: Prisma.FieldRef<"Account", 'Float'>
+  readonly netPnl: Prisma.FieldRef<"Account", 'Float'>
+  readonly charges: Prisma.FieldRef<"Account", 'Float'>
 }
     
 

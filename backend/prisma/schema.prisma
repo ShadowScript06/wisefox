@@ -34,6 +34,8 @@ model Account{
   positions Position[]
   marginUsed Float @default(0)
   auditLogs AuditLog[]
+  netPnl Float?
+  charges Float?
 }
 
 model Order{
@@ -84,7 +86,8 @@ model Position{
   tpHit       Boolean   @default(false)
 
 
-  @@unique([accountId,symbol,isOpen])
+
+
 }
 model Trade{
   id String @id @default(uuid())
@@ -98,6 +101,7 @@ model Trade{
   realizedPnl Float @default(0)
   createdAt DateTime @default(now())
   trigger   String?   
+  charges  Float?
 
 }
 

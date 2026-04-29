@@ -94,7 +94,9 @@ export const AccountScalarFieldEnum = {
   balance: 'balance',
   userId: 'userId',
   createdAt: 'createdAt',
-  marginUsed: 'marginUsed'
+  marginUsed: 'marginUsed',
+  netPnl: 'netPnl',
+  charges: 'charges'
 } as const
 
 export type AccountScalarFieldEnum = (typeof AccountScalarFieldEnum)[keyof typeof AccountScalarFieldEnum]
@@ -160,7 +162,8 @@ export const TradeScalarFieldEnum = {
   price: 'price',
   realizedPnl: 'realizedPnl',
   createdAt: 'createdAt',
-  trigger: 'trigger'
+  trigger: 'trigger',
+  charges: 'charges'
 } as const
 
 export type TradeScalarFieldEnum = (typeof TradeScalarFieldEnum)[keyof typeof TradeScalarFieldEnum]

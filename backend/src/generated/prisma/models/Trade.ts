@@ -30,12 +30,14 @@ export type TradeAvgAggregateOutputType = {
   quantity: number | null
   price: number | null
   realizedPnl: number | null
+  charges: number | null
 }
 
 export type TradeSumAggregateOutputType = {
   quantity: number | null
   price: number | null
   realizedPnl: number | null
+  charges: number | null
 }
 
 export type TradeMinAggregateOutputType = {
@@ -49,6 +51,7 @@ export type TradeMinAggregateOutputType = {
   realizedPnl: number | null
   createdAt: Date | null
   trigger: string | null
+  charges: number | null
 }
 
 export type TradeMaxAggregateOutputType = {
@@ -62,6 +65,7 @@ export type TradeMaxAggregateOutputType = {
   realizedPnl: number | null
   createdAt: Date | null
   trigger: string | null
+  charges: number | null
 }
 
 export type TradeCountAggregateOutputType = {
@@ -75,6 +79,7 @@ export type TradeCountAggregateOutputType = {
   realizedPnl: number
   createdAt: number
   trigger: number
+  charges: number
   _all: number
 }
 
@@ -83,12 +88,14 @@ export type TradeAvgAggregateInputType = {
   quantity?: true
   price?: true
   realizedPnl?: true
+  charges?: true
 }
 
 export type TradeSumAggregateInputType = {
   quantity?: true
   price?: true
   realizedPnl?: true
+  charges?: true
 }
 
 export type TradeMinAggregateInputType = {
@@ -102,6 +109,7 @@ export type TradeMinAggregateInputType = {
   realizedPnl?: true
   createdAt?: true
   trigger?: true
+  charges?: true
 }
 
 export type TradeMaxAggregateInputType = {
@@ -115,6 +123,7 @@ export type TradeMaxAggregateInputType = {
   realizedPnl?: true
   createdAt?: true
   trigger?: true
+  charges?: true
 }
 
 export type TradeCountAggregateInputType = {
@@ -128,6 +137,7 @@ export type TradeCountAggregateInputType = {
   realizedPnl?: true
   createdAt?: true
   trigger?: true
+  charges?: true
   _all?: true
 }
 
@@ -228,6 +238,7 @@ export type TradeGroupByOutputType = {
   realizedPnl: number
   createdAt: Date
   trigger: string | null
+  charges: number | null
   _count: TradeCountAggregateOutputType | null
   _avg: TradeAvgAggregateOutputType | null
   _sum: TradeSumAggregateOutputType | null
@@ -264,6 +275,7 @@ export type TradeWhereInput = {
   realizedPnl?: Prisma.FloatFilter<"Trade"> | number
   createdAt?: Prisma.DateTimeFilter<"Trade"> | Date | string
   trigger?: Prisma.StringNullableFilter<"Trade"> | string | null
+  charges?: Prisma.FloatNullableFilter<"Trade"> | number | null
   order?: Prisma.XOR<Prisma.OrderNullableScalarRelationFilter, Prisma.OrderWhereInput> | null
 }
 
@@ -278,6 +290,7 @@ export type TradeOrderByWithRelationInput = {
   realizedPnl?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   trigger?: Prisma.SortOrderInput | Prisma.SortOrder
+  charges?: Prisma.SortOrderInput | Prisma.SortOrder
   order?: Prisma.OrderOrderByWithRelationInput
 }
 
@@ -295,6 +308,7 @@ export type TradeWhereUniqueInput = Prisma.AtLeast<{
   realizedPnl?: Prisma.FloatFilter<"Trade"> | number
   createdAt?: Prisma.DateTimeFilter<"Trade"> | Date | string
   trigger?: Prisma.StringNullableFilter<"Trade"> | string | null
+  charges?: Prisma.FloatNullableFilter<"Trade"> | number | null
   order?: Prisma.XOR<Prisma.OrderNullableScalarRelationFilter, Prisma.OrderWhereInput> | null
 }, "id">
 
@@ -309,6 +323,7 @@ export type TradeOrderByWithAggregationInput = {
   realizedPnl?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   trigger?: Prisma.SortOrderInput | Prisma.SortOrder
+  charges?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.TradeCountOrderByAggregateInput
   _avg?: Prisma.TradeAvgOrderByAggregateInput
   _max?: Prisma.TradeMaxOrderByAggregateInput
@@ -330,6 +345,7 @@ export type TradeScalarWhereWithAggregatesInput = {
   realizedPnl?: Prisma.FloatWithAggregatesFilter<"Trade"> | number
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Trade"> | Date | string
   trigger?: Prisma.StringNullableWithAggregatesFilter<"Trade"> | string | null
+  charges?: Prisma.FloatNullableWithAggregatesFilter<"Trade"> | number | null
 }
 
 export type TradeCreateInput = {
@@ -342,6 +358,7 @@ export type TradeCreateInput = {
   realizedPnl?: number
   createdAt?: Date | string
   trigger?: string | null
+  charges?: number | null
   order?: Prisma.OrderCreateNestedOneWithoutTradesInput
 }
 
@@ -356,6 +373,7 @@ export type TradeUncheckedCreateInput = {
   realizedPnl?: number
   createdAt?: Date | string
   trigger?: string | null
+  charges?: number | null
 }
 
 export type TradeUpdateInput = {
@@ -368,6 +386,7 @@ export type TradeUpdateInput = {
   realizedPnl?: Prisma.FloatFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   trigger?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  charges?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   order?: Prisma.OrderUpdateOneWithoutTradesNestedInput
 }
 
@@ -382,6 +401,7 @@ export type TradeUncheckedUpdateInput = {
   realizedPnl?: Prisma.FloatFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   trigger?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  charges?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
 }
 
 export type TradeCreateManyInput = {
@@ -395,6 +415,7 @@ export type TradeCreateManyInput = {
   realizedPnl?: number
   createdAt?: Date | string
   trigger?: string | null
+  charges?: number | null
 }
 
 export type TradeUpdateManyMutationInput = {
@@ -407,6 +428,7 @@ export type TradeUpdateManyMutationInput = {
   realizedPnl?: Prisma.FloatFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   trigger?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  charges?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
 }
 
 export type TradeUncheckedUpdateManyInput = {
@@ -420,6 +442,7 @@ export type TradeUncheckedUpdateManyInput = {
   realizedPnl?: Prisma.FloatFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   trigger?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  charges?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
 }
 
 export type TradeListRelationFilter = {
@@ -443,12 +466,14 @@ export type TradeCountOrderByAggregateInput = {
   realizedPnl?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   trigger?: Prisma.SortOrder
+  charges?: Prisma.SortOrder
 }
 
 export type TradeAvgOrderByAggregateInput = {
   quantity?: Prisma.SortOrder
   price?: Prisma.SortOrder
   realizedPnl?: Prisma.SortOrder
+  charges?: Prisma.SortOrder
 }
 
 export type TradeMaxOrderByAggregateInput = {
@@ -462,6 +487,7 @@ export type TradeMaxOrderByAggregateInput = {
   realizedPnl?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   trigger?: Prisma.SortOrder
+  charges?: Prisma.SortOrder
 }
 
 export type TradeMinOrderByAggregateInput = {
@@ -475,12 +501,14 @@ export type TradeMinOrderByAggregateInput = {
   realizedPnl?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   trigger?: Prisma.SortOrder
+  charges?: Prisma.SortOrder
 }
 
 export type TradeSumOrderByAggregateInput = {
   quantity?: Prisma.SortOrder
   price?: Prisma.SortOrder
   realizedPnl?: Prisma.SortOrder
+  charges?: Prisma.SortOrder
 }
 
 export type TradeCreateNestedManyWithoutOrderInput = {
@@ -535,6 +563,7 @@ export type TradeCreateWithoutOrderInput = {
   realizedPnl?: number
   createdAt?: Date | string
   trigger?: string | null
+  charges?: number | null
 }
 
 export type TradeUncheckedCreateWithoutOrderInput = {
@@ -547,6 +576,7 @@ export type TradeUncheckedCreateWithoutOrderInput = {
   realizedPnl?: number
   createdAt?: Date | string
   trigger?: string | null
+  charges?: number | null
 }
 
 export type TradeCreateOrConnectWithoutOrderInput = {
@@ -589,6 +619,7 @@ export type TradeScalarWhereInput = {
   realizedPnl?: Prisma.FloatFilter<"Trade"> | number
   createdAt?: Prisma.DateTimeFilter<"Trade"> | Date | string
   trigger?: Prisma.StringNullableFilter<"Trade"> | string | null
+  charges?: Prisma.FloatNullableFilter<"Trade"> | number | null
 }
 
 export type TradeCreateManyOrderInput = {
@@ -601,6 +632,7 @@ export type TradeCreateManyOrderInput = {
   realizedPnl?: number
   createdAt?: Date | string
   trigger?: string | null
+  charges?: number | null
 }
 
 export type TradeUpdateWithoutOrderInput = {
@@ -613,6 +645,7 @@ export type TradeUpdateWithoutOrderInput = {
   realizedPnl?: Prisma.FloatFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   trigger?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  charges?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
 }
 
 export type TradeUncheckedUpdateWithoutOrderInput = {
@@ -625,6 +658,7 @@ export type TradeUncheckedUpdateWithoutOrderInput = {
   realizedPnl?: Prisma.FloatFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   trigger?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  charges?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
 }
 
 export type TradeUncheckedUpdateManyWithoutOrderInput = {
@@ -637,6 +671,7 @@ export type TradeUncheckedUpdateManyWithoutOrderInput = {
   realizedPnl?: Prisma.FloatFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   trigger?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  charges?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
 }
 
 
@@ -652,6 +687,7 @@ export type TradeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   realizedPnl?: boolean
   createdAt?: boolean
   trigger?: boolean
+  charges?: boolean
   order?: boolean | Prisma.Trade$orderArgs<ExtArgs>
 }, ExtArgs["result"]["trade"]>
 
@@ -666,6 +702,7 @@ export type TradeSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensi
   realizedPnl?: boolean
   createdAt?: boolean
   trigger?: boolean
+  charges?: boolean
   order?: boolean | Prisma.Trade$orderArgs<ExtArgs>
 }, ExtArgs["result"]["trade"]>
 
@@ -680,6 +717,7 @@ export type TradeSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensi
   realizedPnl?: boolean
   createdAt?: boolean
   trigger?: boolean
+  charges?: boolean
   order?: boolean | Prisma.Trade$orderArgs<ExtArgs>
 }, ExtArgs["result"]["trade"]>
 
@@ -694,9 +732,10 @@ export type TradeSelectScalar = {
   realizedPnl?: boolean
   createdAt?: boolean
   trigger?: boolean
+  charges?: boolean
 }
 
-export type TradeOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "orderId" | "accountId" | "symbol" | "direction" | "quantity" | "price" | "realizedPnl" | "createdAt" | "trigger", ExtArgs["result"]["trade"]>
+export type TradeOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "orderId" | "accountId" | "symbol" | "direction" | "quantity" | "price" | "realizedPnl" | "createdAt" | "trigger" | "charges", ExtArgs["result"]["trade"]>
 export type TradeInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   order?: boolean | Prisma.Trade$orderArgs<ExtArgs>
 }
@@ -723,6 +762,7 @@ export type $TradePayload<ExtArgs extends runtime.Types.Extensions.InternalArgs 
     realizedPnl: number
     createdAt: Date
     trigger: string | null
+    charges: number | null
   }, ExtArgs["result"]["trade"]>
   composites: {}
 }
@@ -1157,6 +1197,7 @@ export interface TradeFieldRefs {
   readonly realizedPnl: Prisma.FieldRef<"Trade", 'Float'>
   readonly createdAt: Prisma.FieldRef<"Trade", 'DateTime'>
   readonly trigger: Prisma.FieldRef<"Trade", 'String'>
+  readonly charges: Prisma.FieldRef<"Trade", 'Float'>
 }
     
 

@@ -42,6 +42,27 @@ interface Order {
   updatedAt: string;
 }
 
+interface Position {
+  id: string;
+  accountId: string;
+  symbol: string;
+  direction: "LONG" | "SHORT";
+  quantity: number;
+  avgEntryPrice: number;
+  realizedPnl: number;
+  isOpen: boolean;
+  leverage: number;
+  marginUsed: number;
+  slPrice: number | null;
+  slQty: number | null;
+  tpPrice: number | null;
+  tpQty: number | null;
+  slHit: boolean;
+  tpHit: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
 type Direction = "LONG" | "SHORT";
 type OrderType = "MARKET" | "LIMIT";
 type SymbolKey = "BTCUSD" | "XAUUSD";
@@ -120,6 +141,7 @@ function AccountPage() {
   const [account, setAccount] = useState<Account | null>(null);
   const [loading, setLoading] = useState(true);
   const [orders, setOrders] = useState<Order[]>([]);
+  const [positions, setPositions] = useState<Position[]>([]);
 
   const [isOpenModal, setIsOpenModal] = useState(false);
   const [symbol, setSymbol] = useState<SymbolKey>("BTCUSD");
@@ -159,6 +181,7 @@ function AccountPage() {
       stopLoss: form.slPrice ? Number(form.slPrice) : 0,
       target: form.tpPrice ? Number(form.tpPrice) : 0,
       direction: form.direction,
+      leverage:form.leverage? Number(form.leverage): 1
     });
   }, [
     form.quantity,
@@ -166,6 +189,7 @@ function AccountPage() {
     form.slPrice,
     form.tpPrice,
     form.direction,
+    form.leverage
   ]);
 
   // ── Toast helper ────────────────────────────────────────────────────────────
@@ -188,12 +212,16 @@ function AccountPage() {
 
     async function fetchAll() {
       try {
-        const [accountRes, ordersRes] = await Promise.all([
+        const [accountRes, ordersRes, positionsRes] = await Promise.all([
           axios.get(`${import.meta.env.VITE_BACKEND_URL}/accounts/${id}`, {
             withCredentials: true,
           }),
           axios.get(
             `${import.meta.env.VITE_BACKEND_URL}/accounts/${id}/orders`,
+            { withCredentials: true },
+          ),
+          axios.get(
+            `${import.meta.env.VITE_BACKEND_URL}/accounts/${id}/positions`,
             { withCredentials: true },
           ),
         ]);
@@ -209,6 +237,9 @@ function AccountPage() {
           );
           setOrders(sorted);
         }
+        if (positionsRes.data.success) {
+          setPositions(positionsRes.data.data);
+        }
       } catch {
         if (!cancelled) showToast("Failed to load account data.", "error");
       } finally {
@@ -220,7 +251,7 @@ function AccountPage() {
     return () => {
       cancelled = true;
     };
-  }, [id, showToast]);
+  }, [id, showToast,orders]);
 
   // ── Modal open/close ────────────────────────────────────────────────────────
 
@@ -341,7 +372,7 @@ function AccountPage() {
     );
   }
 
-  const freeMargin = account.balance - account.marginUsed;
+  const freeMargin = account.balance;
   const marginUtilPct =
     account.balance > 0
       ? ((account.marginUsed / account.balance) * 100).toFixed(1)
@@ -404,7 +435,7 @@ function AccountPage() {
           />
         </div>
 
-        {/* Markets + Orders */}
+        {/* Markets + Positions + Orders */}
         <div className="grid md:grid-cols-[320px_1fr] gap-6">
           {/* Markets Panel */}
           <aside className="space-y-3">
@@ -429,8 +460,29 @@ function AccountPage() {
             />
           </aside>
 
-          {/* Orders Panel */}
+          {/* Positions & Orders Panel */}
           <section>
+            {/* Positions */}
+            <h2 className="text-xs font-semibold text-zinc-500 uppercase tracking-widest mb-3">
+              Positions
+            </h2>
+
+            {positions.length === 0 ? (
+              <div className="rounded-xl border border-dashed border-white/10 bg-white/[0.02] px-6 py-8 text-center mb-5">
+                <p className="text-white font-medium text-sm">
+                  No Open Positions
+                </p>
+                <p className="text-zinc-500 text-xs mt-1">
+                  Your active trades will appear here.
+                </p>
+              </div>
+            ) : (
+              <div className="space-y-2 mb-6">
+                {positions.map((position) => (
+                  <PositionRow key={position.id} position={position} marketPrice={marketPrice} />
+                ))}
+              </div>
+            )}
             <h2 className="text-xs font-semibold text-zinc-500 uppercase tracking-widest mb-3">
               Orders
             </h2>
@@ -641,13 +693,23 @@ function AccountPage() {
 
               {/* Trade Preview */}
               {tradeResult &&
-                (parseFloat(form.slPrice) > 0 || parseFloat(form.tpPrice)) && (
+                (parseFloat(form.slPrice) > 0 || parseFloat(form.tpPrice)>0 || tradeResult.marginRequired) && (
                   <div className="mb-5 rounded-2xl border border-white/10 bg-white/5 p-4 space-y-3">
                     <h3 className="text-sm font-semibold text-white">
                       Trade Preview
                     </h3>
 
+
                     <div className="rounded-xl bg-white/5 p-3 text-sm space-y-2">
+                       {tradeResult.marginRequired !== undefined && (
+                        <div className="flex justify-between">
+                          <span className="text-zinc-400">Margin Required</span>
+                          <span className="text-yellow-400 font-medium">
+                            ${tradeResult.marginRequired.toLocaleString()}
+                          </span>
+                        </div>
+                      )}
+
                       {/* Profit Side */}
                       {tradeResult.profit !== undefined && (
                         <div className="flex justify-between">
@@ -916,6 +978,117 @@ function OrderRow({ order }: { order: Order }) {
   );
 }
 
+// ===============================
+// 5) ADD THIS COMPONENT
+// Place BELOW OrderRow()
+// ===============================
+
+function PositionRow({
+  position,
+  marketPrice,
+}: {
+  position: Position;
+  marketPrice: number;
+}) {
+  const isLong = position.direction === "LONG";
+
+  const unrealized =
+    isLong
+      ? (marketPrice - position.avgEntryPrice) * position.quantity/1000
+      : (position.avgEntryPrice - marketPrice) * position.quantity/1000;
+
+  const pnlPositive = unrealized >= 0;
+
+  return (
+    <div className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 hover:bg-white/[0.07] transition">
+      <div className="flex items-center justify-between">
+        {/* LEFT */}
+        <div className="space-y-1.5">
+          <div className="flex items-center gap-2 flex-wrap">
+            <span className="text-white font-semibold text-sm">
+              {position.symbol}
+            </span>
+
+            <span
+              className={`text-xs px-2 py-0.5 rounded-md font-medium ${
+                isLong
+                  ? "bg-green-500/15 text-green-400"
+                  : "bg-red-500/15 text-red-400"
+              }`}
+            >
+              {position.direction}
+            </span>
+
+            <span className="text-xs px-2 py-0.5 rounded-md bg-cyan-500/15 text-cyan-400">
+              {position.leverage}x
+            </span>
+
+            {!position.isOpen && (
+              <span className="text-xs px-2 py-0.5 rounded-md bg-zinc-500/15 text-zinc-400">
+                CLOSED
+              </span>
+            )}
+          </div>
+
+          <p className="text-xs text-zinc-500">
+            Qty: {position.quantity.toLocaleString()} · Avg: $
+            {position.avgEntryPrice.toLocaleString()}
+          </p>
+
+          <p className="text-xs text-zinc-600">
+            Margin Used: ${position.marginUsed.toLocaleString()}
+          </p>
+
+          {(position.slPrice || position.tpPrice) && (
+            <p className="text-xs text-zinc-500">
+              {position.slPrice && (
+                <span className="text-red-400 mr-2">
+                  SL ${position.slPrice}
+                  {position.slHit ? " ✓" : ""}
+                </span>
+              )}
+
+              {position.tpPrice && (
+                <span className="text-green-400">
+                  TP ${position.tpPrice}
+                  {position.tpHit ? " ✓" : ""}
+                </span>
+              )}
+            </p>
+          )}
+        </div>
+
+        {/* RIGHT */}
+        <div className="text-right shrink-0 ml-4">
+          <p className="text-sm font-semibold text-white">
+            Mark: ${marketPrice}
+          </p>
+
+          <p
+            className={`text-sm font-semibold ${
+              pnlPositive ? "text-green-400" : "text-red-400"
+            }`}
+          >
+            
+            {pnlPositive ? "+" : ""}
+            ${unrealized.toLocaleString(undefined, {
+              maximumFractionDigits: 2,
+            })}
+          </p>
+
+          
+
+          <p className="text-xs text-zinc-600 mt-0.5">
+            {new Date(position.createdAt).toLocaleDateString("en-US", {
+              dateStyle: "short",
+            })}
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function ModalSection({
   label,
   children,
@@ -959,55 +1132,55 @@ function ToggleGroup({
   );
 }
 
-function PreviewCell({
-  label,
-  value,
-  color,
-}: {
-  label: string;
-  value: string;
-  color?: "green" | "red" | "cyan" | "orange";
-}) {
-  const bg = color
-    ? {
-        green: "bg-green-500/10",
-        red: "bg-red-500/10",
-        cyan: "bg-cyan-500/10",
-        orange: "bg-orange-500/10",
-      }[color]
-    : "bg-white/5";
-  const text = color
-    ? {
-        green: "text-green-400",
-        red: "text-red-400",
-        cyan: "text-cyan-400",
-        orange: "text-orange-400",
-      }[color]
-    : "text-white";
-  const sub = color
-    ? {
-        green: "text-green-300",
-        red: "text-red-300",
-        cyan: "text-cyan-300",
-        orange: "text-orange-300",
-      }[color]
-    : "text-zinc-400";
+// function PreviewCell({
+//   label,
+//   value,
+//   color,
+// }: {
+//   label: string;
+//   value: string;
+//   color?: "green" | "red" | "cyan" | "orange";
+// }) {
+//   const bg = color
+//     ? {
+//         green: "bg-green-500/10",
+//         red: "bg-red-500/10",
+//         cyan: "bg-cyan-500/10",
+//         orange: "bg-orange-500/10",
+//       }[color]
+//     : "bg-white/5";
+//   const text = color
+//     ? {
+//         green: "text-green-400",
+//         red: "text-red-400",
+//         cyan: "text-cyan-400",
+//         orange: "text-orange-400",
+//       }[color]
+//     : "text-white";
+//   const sub = color
+//     ? {
+//         green: "text-green-300",
+//         red: "text-red-300",
+//         cyan: "text-cyan-300",
+//         orange: "text-orange-300",
+//       }[color]
+//     : "text-zinc-400";
 
-  return (
-    <div className={`rounded-xl ${bg} p-3`}>
-      <p className={`${sub} text-xs mb-1`}>{label}</p>
-      <p className={`${text} font-semibold`}>{value}</p>
-    </div>
-  );
-}
+//   return (
+//     <div className={`rounded-xl ${bg} p-3`}>
+//       <p className={`${sub} text-xs mb-1`}>{label}</p>
+//       <p className={`${text} font-semibold`}>{value}</p>
+//     </div>
+//   );
+// }
 
-function ChargeRow({ label, value }: { label: string; value: number }) {
-  return (
-    <div className="flex justify-between">
-      <span className="text-zinc-400">{label}</span>
-      <span className="text-white">${value.toFixed(2)}</span>
-    </div>
-  );
-}
+// function ChargeRow({ label, value }: { label: string; value: number }) {
+//   return (
+//     <div className="flex justify-between">
+//       <span className="text-zinc-400">{label}</span>
+//       <span className="text-white">${value.toFixed(2)}</span>
+//     </div>
+//   );
+// }
 
 export default AccountPage;

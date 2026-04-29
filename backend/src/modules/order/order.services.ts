@@ -1,3 +1,5 @@
+
+import redisClients from "../../config/redis/redis";
 import {
   Direction,
   OrderStatus,
@@ -74,11 +76,18 @@ const placeOrder = async (input: PlaceOrderInput) => {
     },
   });
 
-  matchingServices
-    .matchOrder(order.id)
-    .catch((err) =>
-      console.error(`matchOrder failed for ${order.id}:`, err.message),
-    );
+
+   await matchingServices.matchOrder(order.id).catch((err) => {
+      console.error(`Failed to match order ${order.id}:`, err.message);
+    });
+  
+  // redisClients.producer.lpush('orders',String(order.id));
+
+  // matchingServices
+  //   .matchOrder(order.id)
+  //   .catch((err) =>
+  //     console.error(`matchOrder failed for ${order.id}:`, err.message),
+  //   );
 
   return order;
 };

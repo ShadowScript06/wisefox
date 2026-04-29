@@ -379,7 +379,7 @@ export type PositionOrderByWithRelationInput = {
 
 export type PositionWhereUniqueInput = Prisma.AtLeast<{
   id?: string
-  accountId_symbol_isOpen?: Prisma.PositionAccountIdSymbolIsOpenCompoundUniqueInput
+  accountId_symbol?: Prisma.PositionAccountIdSymbolCompoundUniqueInput
   AND?: Prisma.PositionWhereInput | Prisma.PositionWhereInput[]
   OR?: Prisma.PositionWhereInput[]
   NOT?: Prisma.PositionWhereInput | Prisma.PositionWhereInput[]
@@ -401,7 +401,7 @@ export type PositionWhereUniqueInput = Prisma.AtLeast<{
   slHit?: Prisma.BoolFilter<"Position"> | boolean
   tpHit?: Prisma.BoolFilter<"Position"> | boolean
   account?: Prisma.XOR<Prisma.AccountScalarRelationFilter, Prisma.AccountWhereInput>
-}, "id" | "accountId_symbol_isOpen">
+}, "id" | "accountId_symbol">
 
 export type PositionOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
@@ -609,10 +609,9 @@ export type PositionOrderByRelationAggregateInput = {
   _count?: Prisma.SortOrder
 }
 
-export type PositionAccountIdSymbolIsOpenCompoundUniqueInput = {
+export type PositionAccountIdSymbolCompoundUniqueInput = {
   accountId: string
   symbol: string
-  isOpen: boolean
 }
 
 export type PositionCountOrderByAggregateInput = {

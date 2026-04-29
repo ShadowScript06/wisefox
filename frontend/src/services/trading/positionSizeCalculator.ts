@@ -6,6 +6,7 @@ export type TradeInput = {
   stopLoss?: number | null;
   target?: number | null;
   direction: TradeDirection;
+  leverage:number
 };
 
 export type TradeResult = {
@@ -24,6 +25,8 @@ export type TradeResult = {
 
   totalRisk?: number;
   totalProfit?: number;
+
+  marginRequired:number;
 };
 
 export function calculateTrade(input: TradeInput): TradeResult {
@@ -33,6 +36,7 @@ export function calculateTrade(input: TradeInput): TradeResult {
     stopLoss,
     target,
     direction,
+    leverage
   } = input;
 
   // ---------------- RISK ----------------
@@ -84,6 +88,8 @@ export function calculateTrade(input: TradeInput): TradeResult {
   const totalProfit =
     profit != null && profitCharges != null ? profit - profitCharges : undefined;
 
+  const marginRequired=entryPrice*(contracts/1000)/leverage;
+
   return {
     contracts,
 
@@ -100,5 +106,7 @@ export function calculateTrade(input: TradeInput): TradeResult {
 
     totalRisk,
     totalProfit,
+
+    marginRequired
   };
 }

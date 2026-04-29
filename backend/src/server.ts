@@ -12,6 +12,7 @@ import { prisma } from "./lib/prisma";
 import pnlServices from "./modules/pnl/pnl.services";
 import liquidationService from "./modules/liquidation/liquidation.services";
 import sltpService from './modules/sltp/sltp.services'
+import redisClients from "./config/redis/redis";
 
 
 
@@ -113,9 +114,9 @@ setInterval(async () => {
   // );
 
   // 4. match pending orders
-  // await matchingServices
-  //   .matchPendingOrders()
-  //   .catch((err) => console.error("matchPendingOrders error:", err.message));
+  await matchingServices
+    .matchPendingOrders()
+    .catch((err) => console.error("matchPendingOrders error:", err.message));
 
 
   //   await sltpService
@@ -126,5 +127,6 @@ setInterval(async () => {
 
 server.listen(PORT, async () => {
   getPrices();
+  redisClients.connectRedis();
   console.log("Server running on port " + PORT);
 });
