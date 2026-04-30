@@ -9,7 +9,7 @@ sltpService
     const { slPrice, slQty, tpPrice, tpQty } = request.body
    
 
-    await sltpService.setSLTP({ positionId, accountId, slPrice, slQty, tpPrice, tpQty })
+    await sltpService.setSLTP({ positionId, accountId, slPrice,  tpPrice, })
 
     response.json({ success: true, message: 'SL/TP updated successfully' })
   } catch (error) {
@@ -31,9 +31,7 @@ sltpService
       positionId,
       accountId,
       slPrice: undefined,
-      slQty: undefined,
       tpPrice: undefined,
-      tpQty: undefined,
     })
 
     response.json({ success: true, message: 'SL/TP removed' })

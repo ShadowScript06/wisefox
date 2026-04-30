@@ -33,9 +33,7 @@ export type PositionAvgAggregateOutputType = {
   leverage: number | null
   marginUsed: number | null
   slPrice: number | null
-  slQty: number | null
   tpPrice: number | null
-  tpQty: number | null
 }
 
 export type PositionSumAggregateOutputType = {
@@ -45,9 +43,7 @@ export type PositionSumAggregateOutputType = {
   leverage: number | null
   marginUsed: number | null
   slPrice: number | null
-  slQty: number | null
   tpPrice: number | null
-  tpQty: number | null
 }
 
 export type PositionMinAggregateOutputType = {
@@ -64,9 +60,7 @@ export type PositionMinAggregateOutputType = {
   leverage: number | null
   marginUsed: number | null
   slPrice: number | null
-  slQty: number | null
   tpPrice: number | null
-  tpQty: number | null
   slHit: boolean | null
   tpHit: boolean | null
 }
@@ -85,9 +79,7 @@ export type PositionMaxAggregateOutputType = {
   leverage: number | null
   marginUsed: number | null
   slPrice: number | null
-  slQty: number | null
   tpPrice: number | null
-  tpQty: number | null
   slHit: boolean | null
   tpHit: boolean | null
 }
@@ -106,9 +98,7 @@ export type PositionCountAggregateOutputType = {
   leverage: number
   marginUsed: number
   slPrice: number
-  slQty: number
   tpPrice: number
-  tpQty: number
   slHit: number
   tpHit: number
   _all: number
@@ -122,9 +112,7 @@ export type PositionAvgAggregateInputType = {
   leverage?: true
   marginUsed?: true
   slPrice?: true
-  slQty?: true
   tpPrice?: true
-  tpQty?: true
 }
 
 export type PositionSumAggregateInputType = {
@@ -134,9 +122,7 @@ export type PositionSumAggregateInputType = {
   leverage?: true
   marginUsed?: true
   slPrice?: true
-  slQty?: true
   tpPrice?: true
-  tpQty?: true
 }
 
 export type PositionMinAggregateInputType = {
@@ -153,9 +139,7 @@ export type PositionMinAggregateInputType = {
   leverage?: true
   marginUsed?: true
   slPrice?: true
-  slQty?: true
   tpPrice?: true
-  tpQty?: true
   slHit?: true
   tpHit?: true
 }
@@ -174,9 +158,7 @@ export type PositionMaxAggregateInputType = {
   leverage?: true
   marginUsed?: true
   slPrice?: true
-  slQty?: true
   tpPrice?: true
-  tpQty?: true
   slHit?: true
   tpHit?: true
 }
@@ -195,9 +177,7 @@ export type PositionCountAggregateInputType = {
   leverage?: true
   marginUsed?: true
   slPrice?: true
-  slQty?: true
   tpPrice?: true
-  tpQty?: true
   slHit?: true
   tpHit?: true
   _all?: true
@@ -303,9 +283,7 @@ export type PositionGroupByOutputType = {
   leverage: number
   marginUsed: number
   slPrice: number | null
-  slQty: number | null
   tpPrice: number | null
-  tpQty: number | null
   slHit: boolean
   tpHit: boolean
   _count: PositionCountAggregateOutputType | null
@@ -347,9 +325,7 @@ export type PositionWhereInput = {
   leverage?: Prisma.IntFilter<"Position"> | number
   marginUsed?: Prisma.FloatFilter<"Position"> | number
   slPrice?: Prisma.FloatNullableFilter<"Position"> | number | null
-  slQty?: Prisma.FloatNullableFilter<"Position"> | number | null
   tpPrice?: Prisma.FloatNullableFilter<"Position"> | number | null
-  tpQty?: Prisma.FloatNullableFilter<"Position"> | number | null
   slHit?: Prisma.BoolFilter<"Position"> | boolean
   tpHit?: Prisma.BoolFilter<"Position"> | boolean
   account?: Prisma.XOR<Prisma.AccountScalarRelationFilter, Prisma.AccountWhereInput>
@@ -369,9 +345,7 @@ export type PositionOrderByWithRelationInput = {
   leverage?: Prisma.SortOrder
   marginUsed?: Prisma.SortOrder
   slPrice?: Prisma.SortOrderInput | Prisma.SortOrder
-  slQty?: Prisma.SortOrderInput | Prisma.SortOrder
   tpPrice?: Prisma.SortOrderInput | Prisma.SortOrder
-  tpQty?: Prisma.SortOrderInput | Prisma.SortOrder
   slHit?: Prisma.SortOrder
   tpHit?: Prisma.SortOrder
   account?: Prisma.AccountOrderByWithRelationInput
@@ -394,9 +368,7 @@ export type PositionWhereUniqueInput = Prisma.AtLeast<{
   leverage?: Prisma.IntFilter<"Position"> | number
   marginUsed?: Prisma.FloatFilter<"Position"> | number
   slPrice?: Prisma.FloatNullableFilter<"Position"> | number | null
-  slQty?: Prisma.FloatNullableFilter<"Position"> | number | null
   tpPrice?: Prisma.FloatNullableFilter<"Position"> | number | null
-  tpQty?: Prisma.FloatNullableFilter<"Position"> | number | null
   slHit?: Prisma.BoolFilter<"Position"> | boolean
   tpHit?: Prisma.BoolFilter<"Position"> | boolean
   account?: Prisma.XOR<Prisma.AccountScalarRelationFilter, Prisma.AccountWhereInput>
@@ -416,9 +388,7 @@ export type PositionOrderByWithAggregationInput = {
   leverage?: Prisma.SortOrder
   marginUsed?: Prisma.SortOrder
   slPrice?: Prisma.SortOrderInput | Prisma.SortOrder
-  slQty?: Prisma.SortOrderInput | Prisma.SortOrder
   tpPrice?: Prisma.SortOrderInput | Prisma.SortOrder
-  tpQty?: Prisma.SortOrderInput | Prisma.SortOrder
   slHit?: Prisma.SortOrder
   tpHit?: Prisma.SortOrder
   _count?: Prisma.PositionCountOrderByAggregateInput
@@ -445,9 +415,7 @@ export type PositionScalarWhereWithAggregatesInput = {
   leverage?: Prisma.IntWithAggregatesFilter<"Position"> | number
   marginUsed?: Prisma.FloatWithAggregatesFilter<"Position"> | number
   slPrice?: Prisma.FloatNullableWithAggregatesFilter<"Position"> | number | null
-  slQty?: Prisma.FloatNullableWithAggregatesFilter<"Position"> | number | null
   tpPrice?: Prisma.FloatNullableWithAggregatesFilter<"Position"> | number | null
-  tpQty?: Prisma.FloatNullableWithAggregatesFilter<"Position"> | number | null
   slHit?: Prisma.BoolWithAggregatesFilter<"Position"> | boolean
   tpHit?: Prisma.BoolWithAggregatesFilter<"Position"> | boolean
 }
@@ -465,9 +433,7 @@ export type PositionCreateInput = {
   leverage?: number
   marginUsed?: number
   slPrice?: number | null
-  slQty?: number | null
   tpPrice?: number | null
-  tpQty?: number | null
   slHit?: boolean
   tpHit?: boolean
   account: Prisma.AccountCreateNestedOneWithoutPositionsInput
@@ -487,9 +453,7 @@ export type PositionUncheckedCreateInput = {
   leverage?: number
   marginUsed?: number
   slPrice?: number | null
-  slQty?: number | null
   tpPrice?: number | null
-  tpQty?: number | null
   slHit?: boolean
   tpHit?: boolean
 }
@@ -507,9 +471,7 @@ export type PositionUpdateInput = {
   leverage?: Prisma.IntFieldUpdateOperationsInput | number
   marginUsed?: Prisma.FloatFieldUpdateOperationsInput | number
   slPrice?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  slQty?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   tpPrice?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  tpQty?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   slHit?: Prisma.BoolFieldUpdateOperationsInput | boolean
   tpHit?: Prisma.BoolFieldUpdateOperationsInput | boolean
   account?: Prisma.AccountUpdateOneRequiredWithoutPositionsNestedInput
@@ -529,9 +491,7 @@ export type PositionUncheckedUpdateInput = {
   leverage?: Prisma.IntFieldUpdateOperationsInput | number
   marginUsed?: Prisma.FloatFieldUpdateOperationsInput | number
   slPrice?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  slQty?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   tpPrice?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  tpQty?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   slHit?: Prisma.BoolFieldUpdateOperationsInput | boolean
   tpHit?: Prisma.BoolFieldUpdateOperationsInput | boolean
 }
@@ -550,9 +510,7 @@ export type PositionCreateManyInput = {
   leverage?: number
   marginUsed?: number
   slPrice?: number | null
-  slQty?: number | null
   tpPrice?: number | null
-  tpQty?: number | null
   slHit?: boolean
   tpHit?: boolean
 }
@@ -570,9 +528,7 @@ export type PositionUpdateManyMutationInput = {
   leverage?: Prisma.IntFieldUpdateOperationsInput | number
   marginUsed?: Prisma.FloatFieldUpdateOperationsInput | number
   slPrice?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  slQty?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   tpPrice?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  tpQty?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   slHit?: Prisma.BoolFieldUpdateOperationsInput | boolean
   tpHit?: Prisma.BoolFieldUpdateOperationsInput | boolean
 }
@@ -591,9 +547,7 @@ export type PositionUncheckedUpdateManyInput = {
   leverage?: Prisma.IntFieldUpdateOperationsInput | number
   marginUsed?: Prisma.FloatFieldUpdateOperationsInput | number
   slPrice?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  slQty?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   tpPrice?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  tpQty?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   slHit?: Prisma.BoolFieldUpdateOperationsInput | boolean
   tpHit?: Prisma.BoolFieldUpdateOperationsInput | boolean
 }
@@ -622,9 +576,7 @@ export type PositionCountOrderByAggregateInput = {
   leverage?: Prisma.SortOrder
   marginUsed?: Prisma.SortOrder
   slPrice?: Prisma.SortOrder
-  slQty?: Prisma.SortOrder
   tpPrice?: Prisma.SortOrder
-  tpQty?: Prisma.SortOrder
   slHit?: Prisma.SortOrder
   tpHit?: Prisma.SortOrder
 }
@@ -636,9 +588,7 @@ export type PositionAvgOrderByAggregateInput = {
   leverage?: Prisma.SortOrder
   marginUsed?: Prisma.SortOrder
   slPrice?: Prisma.SortOrder
-  slQty?: Prisma.SortOrder
   tpPrice?: Prisma.SortOrder
-  tpQty?: Prisma.SortOrder
 }
 
 export type PositionMaxOrderByAggregateInput = {
@@ -655,9 +605,7 @@ export type PositionMaxOrderByAggregateInput = {
   leverage?: Prisma.SortOrder
   marginUsed?: Prisma.SortOrder
   slPrice?: Prisma.SortOrder
-  slQty?: Prisma.SortOrder
   tpPrice?: Prisma.SortOrder
-  tpQty?: Prisma.SortOrder
   slHit?: Prisma.SortOrder
   tpHit?: Prisma.SortOrder
 }
@@ -676,9 +624,7 @@ export type PositionMinOrderByAggregateInput = {
   leverage?: Prisma.SortOrder
   marginUsed?: Prisma.SortOrder
   slPrice?: Prisma.SortOrder
-  slQty?: Prisma.SortOrder
   tpPrice?: Prisma.SortOrder
-  tpQty?: Prisma.SortOrder
   slHit?: Prisma.SortOrder
   tpHit?: Prisma.SortOrder
 }
@@ -690,9 +636,7 @@ export type PositionSumOrderByAggregateInput = {
   leverage?: Prisma.SortOrder
   marginUsed?: Prisma.SortOrder
   slPrice?: Prisma.SortOrder
-  slQty?: Prisma.SortOrder
   tpPrice?: Prisma.SortOrder
-  tpQty?: Prisma.SortOrder
 }
 
 export type PositionCreateNestedManyWithoutAccountInput = {
@@ -750,9 +694,7 @@ export type PositionCreateWithoutAccountInput = {
   leverage?: number
   marginUsed?: number
   slPrice?: number | null
-  slQty?: number | null
   tpPrice?: number | null
-  tpQty?: number | null
   slHit?: boolean
   tpHit?: boolean
 }
@@ -770,9 +712,7 @@ export type PositionUncheckedCreateWithoutAccountInput = {
   leverage?: number
   marginUsed?: number
   slPrice?: number | null
-  slQty?: number | null
   tpPrice?: number | null
-  tpQty?: number | null
   slHit?: boolean
   tpHit?: boolean
 }
@@ -820,9 +760,7 @@ export type PositionScalarWhereInput = {
   leverage?: Prisma.IntFilter<"Position"> | number
   marginUsed?: Prisma.FloatFilter<"Position"> | number
   slPrice?: Prisma.FloatNullableFilter<"Position"> | number | null
-  slQty?: Prisma.FloatNullableFilter<"Position"> | number | null
   tpPrice?: Prisma.FloatNullableFilter<"Position"> | number | null
-  tpQty?: Prisma.FloatNullableFilter<"Position"> | number | null
   slHit?: Prisma.BoolFilter<"Position"> | boolean
   tpHit?: Prisma.BoolFilter<"Position"> | boolean
 }
@@ -840,9 +778,7 @@ export type PositionCreateManyAccountInput = {
   leverage?: number
   marginUsed?: number
   slPrice?: number | null
-  slQty?: number | null
   tpPrice?: number | null
-  tpQty?: number | null
   slHit?: boolean
   tpHit?: boolean
 }
@@ -860,9 +796,7 @@ export type PositionUpdateWithoutAccountInput = {
   leverage?: Prisma.IntFieldUpdateOperationsInput | number
   marginUsed?: Prisma.FloatFieldUpdateOperationsInput | number
   slPrice?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  slQty?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   tpPrice?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  tpQty?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   slHit?: Prisma.BoolFieldUpdateOperationsInput | boolean
   tpHit?: Prisma.BoolFieldUpdateOperationsInput | boolean
 }
@@ -880,9 +814,7 @@ export type PositionUncheckedUpdateWithoutAccountInput = {
   leverage?: Prisma.IntFieldUpdateOperationsInput | number
   marginUsed?: Prisma.FloatFieldUpdateOperationsInput | number
   slPrice?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  slQty?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   tpPrice?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  tpQty?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   slHit?: Prisma.BoolFieldUpdateOperationsInput | boolean
   tpHit?: Prisma.BoolFieldUpdateOperationsInput | boolean
 }
@@ -900,9 +832,7 @@ export type PositionUncheckedUpdateManyWithoutAccountInput = {
   leverage?: Prisma.IntFieldUpdateOperationsInput | number
   marginUsed?: Prisma.FloatFieldUpdateOperationsInput | number
   slPrice?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  slQty?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   tpPrice?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  tpQty?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   slHit?: Prisma.BoolFieldUpdateOperationsInput | boolean
   tpHit?: Prisma.BoolFieldUpdateOperationsInput | boolean
 }
@@ -923,9 +853,7 @@ export type PositionSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   leverage?: boolean
   marginUsed?: boolean
   slPrice?: boolean
-  slQty?: boolean
   tpPrice?: boolean
-  tpQty?: boolean
   slHit?: boolean
   tpHit?: boolean
   account?: boolean | Prisma.AccountDefaultArgs<ExtArgs>
@@ -945,9 +873,7 @@ export type PositionSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exte
   leverage?: boolean
   marginUsed?: boolean
   slPrice?: boolean
-  slQty?: boolean
   tpPrice?: boolean
-  tpQty?: boolean
   slHit?: boolean
   tpHit?: boolean
   account?: boolean | Prisma.AccountDefaultArgs<ExtArgs>
@@ -967,9 +893,7 @@ export type PositionSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exte
   leverage?: boolean
   marginUsed?: boolean
   slPrice?: boolean
-  slQty?: boolean
   tpPrice?: boolean
-  tpQty?: boolean
   slHit?: boolean
   tpHit?: boolean
   account?: boolean | Prisma.AccountDefaultArgs<ExtArgs>
@@ -989,14 +913,12 @@ export type PositionSelectScalar = {
   leverage?: boolean
   marginUsed?: boolean
   slPrice?: boolean
-  slQty?: boolean
   tpPrice?: boolean
-  tpQty?: boolean
   slHit?: boolean
   tpHit?: boolean
 }
 
-export type PositionOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "accountId" | "symbol" | "direction" | "quantity" | "avgEntryPrice" | "realizedPnl" | "isOpen" | "createdAt" | "updatedAt" | "leverage" | "marginUsed" | "slPrice" | "slQty" | "tpPrice" | "tpQty" | "slHit" | "tpHit", ExtArgs["result"]["position"]>
+export type PositionOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "accountId" | "symbol" | "direction" | "quantity" | "avgEntryPrice" | "realizedPnl" | "isOpen" | "createdAt" | "updatedAt" | "leverage" | "marginUsed" | "slPrice" | "tpPrice" | "slHit" | "tpHit", ExtArgs["result"]["position"]>
 export type PositionInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   account?: boolean | Prisma.AccountDefaultArgs<ExtArgs>
 }
@@ -1026,9 +948,7 @@ export type $PositionPayload<ExtArgs extends runtime.Types.Extensions.InternalAr
     leverage: number
     marginUsed: number
     slPrice: number | null
-    slQty: number | null
     tpPrice: number | null
-    tpQty: number | null
     slHit: boolean
     tpHit: boolean
   }, ExtArgs["result"]["position"]>
@@ -1468,9 +1388,7 @@ export interface PositionFieldRefs {
   readonly leverage: Prisma.FieldRef<"Position", 'Int'>
   readonly marginUsed: Prisma.FieldRef<"Position", 'Float'>
   readonly slPrice: Prisma.FieldRef<"Position", 'Float'>
-  readonly slQty: Prisma.FieldRef<"Position", 'Float'>
   readonly tpPrice: Prisma.FieldRef<"Position", 'Float'>
-  readonly tpQty: Prisma.FieldRef<"Position", 'Float'>
   readonly slHit: Prisma.FieldRef<"Position", 'Boolean'>
   readonly tpHit: Prisma.FieldRef<"Position", 'Boolean'>
 }

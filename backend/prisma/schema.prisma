@@ -79,15 +79,9 @@ model Position{
   leverage Int @default(1)
   marginUsed Float @default(0)
   slPrice     Float?    // stop loss price
-  slQty       Float?    // how many to close on SL hit
   tpPrice     Float?    // take profit price
-  tpQty       Float?    // how many to close on TP hit
   slHit       Boolean   @default(false)  // already triggered?
   tpHit       Boolean   @default(false)
-
-
-
-
 }
 model Trade{
   id String @id @default(uuid())

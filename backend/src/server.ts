@@ -123,9 +123,9 @@ setInterval(async () => {
     .catch((err) => console.error("matchPendingOrders error:", err.message));
 
 //  5. check sl tp
-  //   await sltpService
-  // .checkSLTPForAllPositions()
-  // .catch((err) => console.error('SLTP check error:', err.message))
+    await sltpService
+  .checkSLTPForAllPositions()
+  .catch((err) => console.error('SLTP check error:', err.message))
   }
 }, 2000);
 
@@ -140,7 +140,7 @@ setInterval(async () => {
 server.listen(PORT, async () => {
 
   getPrices();
-  redisClients.connectRedis();
+  // redisClients.connectRedis();
   await refreshPendingOrdersCache();
   await refreshAccountsCache();
   await refreshPositionsCache();

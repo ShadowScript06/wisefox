@@ -959,9 +959,7 @@ export const PositionScalarFieldEnum = {
   leverage: 'leverage',
   marginUsed: 'marginUsed',
   slPrice: 'slPrice',
-  slQty: 'slQty',
   tpPrice: 'tpPrice',
-  tpQty: 'tpQty',
   slHit: 'slHit',
   tpHit: 'tpHit'
 } as const

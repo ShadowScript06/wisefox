@@ -16,6 +16,9 @@ interface TradeInput {
   price: number;
   leverage: number;
   marginUsed: number;
+  slPrice?:number |null;
+  tpPrice:number |null;
+  
 }
 
 function calcAvgEntry(
@@ -27,6 +30,30 @@ function calcAvgEntry(
   return (
     (existingQty * existingAvg + newQty * newPrice) / (existingQty + newQty)
   );
+}
+
+function validateSlTp(trade: TradeInput) {
+  const { direction, price, slPrice, tpPrice } = trade;
+
+  if (slPrice !== null && slPrice !== undefined) {
+    if (direction === "LONG" && slPrice >= price) {
+      throw new Error("Invalid SL: For LONG position, SL must be less than entry price");
+    }
+
+    if (direction === "SHORT" && slPrice <= price) {
+      throw new Error("Invalid SL: For SHORT position, SL must be greater than entry price");
+    }
+  }
+
+  if (tpPrice !== null && tpPrice !== undefined) {
+    if (direction === "LONG" && tpPrice <= price) {
+      throw new Error("Invalid TP: For LONG position, TP must be greater than entry price");
+    }
+
+    if (direction === "SHORT" && tpPrice >= price) {
+      throw new Error("Invalid TP: For SHORT position, TP must be less than entry price");
+    }
+  }
 }
 
 async function processTradeIntoPosition(
@@ -43,6 +70,7 @@ async function processTradeIntoPosition(
 
   // ─── Scenario A: No open position → just open one ───────────────────
   if (!existingPosition) {
+    validateSlTp(trade);
     const position = await tx.position.create({
       data: {
         accountId: trade.accountId,
@@ -52,6 +80,8 @@ async function processTradeIntoPosition(
         avgEntryPrice: trade.price,
         leverage: trade.leverage,
         marginUsed: trade.marginUsed,
+        slPrice:trade.slPrice,
+        tpPrice:trade.tpPrice,
       },
     });
 

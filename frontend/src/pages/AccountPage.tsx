@@ -197,6 +197,21 @@ function AccountPage() {
     form.leverage,
   ]);
 
+  const sltpValidation = useMemo(() => {
+    const entry = effectiveEntryPrice;
+
+    const sl = form.slPrice ? Number(form.slPrice) : null;
+    const tp = form.tpPrice ? Number(form.tpPrice) : null;
+
+    const isLong = form.direction === "LONG";
+
+    return {
+      slError: sl !== null ? (isLong ? sl >= entry : sl <= entry) : false,
+
+      tpError: tp !== null ? (isLong ? tp <= entry : tp >= entry) : false,
+    };
+  }, [form.slPrice, form.tpPrice, form.direction, effectiveEntryPrice]);
+
   // ── Toast helper ────────────────────────────────────────────────────────────
 
   const showToast = useCallback(
@@ -564,6 +579,7 @@ function AccountPage() {
                     position={position}
                     marketPrice={marketPrice}
                     onClose={() => handleClosePosition(position)}
+                    showToast={showToast}
                   />
                 ))}
               </div>
@@ -732,23 +748,25 @@ function AccountPage() {
                   <h3 className="text-sm text-red-400 font-medium mb-3">
                     Stop Loss
                   </h3>
-                  <div className="grid grid-cols-2 gap-2">
+                  <div className="grid grid-cols-1 gap-2">
                     <input
                       type="number"
                       min="0"
                       value={form.slPrice}
                       onChange={(e) => setField("slPrice", e.target.value)}
                       placeholder="SL Price"
-                      className="px-4 py-3 rounded-xl bg-white/5 border border-white/10 outline-none focus:border-red-400 transition"
+                      className={`px-4 py-3 rounded-xl bg-white/5 border outline-none transition
+${
+  sltpValidation.slError
+    ? "border-red-500 focus:border-red-400"
+    : "border-white/10 focus:border-red-400"
+}`}
                     />
-                    <input
-                      type="number"
-                      min="0"
-                      value={form.slQty}
-                      onChange={(e) => setField("slQty", e.target.value)}
-                      placeholder="SL Qty (optional)"
-                      className="px-4 py-3 rounded-xl bg-white/5 border border-white/10 outline-none focus:border-red-400 transition"
-                    />
+                    {sltpValidation.slError && (
+                      <p className="text-xs text-red-400 mt-1">
+                        Invalid SL for {form.direction}. Check entry price.
+                      </p>
+                    )}
                   </div>
                 </div>
               )}
@@ -759,23 +777,25 @@ function AccountPage() {
                   <h3 className="text-sm text-green-400 font-medium mb-3">
                     Take Profit
                   </h3>
-                  <div className="grid grid-cols-2 gap-2">
+                  <div className="grid grid-cols-1 gap-2">
                     <input
                       type="number"
                       min="0"
                       value={form.tpPrice}
                       onChange={(e) => setField("tpPrice", e.target.value)}
                       placeholder="TP Price"
-                      className="px-4 py-3 rounded-xl bg-white/5 border border-white/10 outline-none focus:border-green-400 transition"
+                      className={`px-4 py-3 rounded-xl bg-white/5 border outline-none transition
+${
+  sltpValidation.tpError
+    ? "border-red-500 focus:border-green-400"
+    : "border-white/10 focus:border-green-400"
+}`}
                     />
-                    <input
-                      type="number"
-                      min="0"
-                      value={form.tpQty}
-                      onChange={(e) => setField("tpQty", e.target.value)}
-                      placeholder="TP Qty (optional)"
-                      className="px-4 py-3 rounded-xl bg-white/5 border border-white/10 outline-none focus:border-green-400 transition"
-                    />
+                    {sltpValidation.tpError && (
+                      <p className="text-xs text-red-400 mt-1">
+                        Invalid TP for {form.direction}. Check entry price.
+                      </p>
+                    )}
                   </div>
                 </div>
               )}
@@ -1082,117 +1102,526 @@ function OrderRow({
   );
 }
 
-function PositionRow({
+// ─── SLTP Modal ───────────────────────────────────────────────────────────────
+
+function SLTPModal({
   position,
+  onClose,
+  onSuccess,
+  showToast,
+}: {
+  position: Position;
+  onClose: () => void;
+  onSuccess: (updated: Partial<Position>) => void;
+  showToast: (msg: string, type: "success" | "error") => void;
+}) {
+  const [slPrice, setSlPrice] = useState(
+    position.slPrice ? String(position.slPrice) : "",
+  );
+  const [tpPrice, setTpPrice] = useState(
+    position.tpPrice ? String(position.tpPrice) : "",
+  );
+  const [submitting, setSubmitting] = useState(false);
+  const [removing, setRemoving] = useState(false);
+
+  const BASE = `${import.meta.env.VITE_BACKEND_URL}/accounts/${position.accountId}/positions/${position.id}/sltp`;
+
+  const hasSL = !!position.slPrice;
+  const hasTP = !!position.tpPrice;
+
+  const sltpPreview = useMemo(() => {
+    const sl = slPrice ? Number(slPrice) : 0;
+    const tp = tpPrice ? Number(tpPrice) : 0;
+
+    if (!position.quantity || !position.avgEntryPrice) return null;
+
+    return calculateTrade({
+      contracts: position.quantity,
+      entryPrice: position.avgEntryPrice,
+      stopLoss: sl,
+      target: tp,
+      direction: position.direction,
+      leverage: position.leverage,
+    });
+  }, [
+    slPrice,
+    tpPrice,
+    position.quantity,
+    position.avgEntryPrice,
+    position.direction,
+    position.leverage,
+  ]);
+
+  // ── Set / update SL+TP ────────────────────────────────────────────────────
+
+  async function handleSave() {
+    if (submitting || removing) return;
+
+    if (!slPrice && !tpPrice) {
+      showToast("Enter at least one of SL or TP price.", "error");
+      return;
+    }
+
+    setSubmitting(true);
+    try {
+      const payload: Record<string, unknown> = {};
+      if (slPrice) payload.slPrice = Number(slPrice);
+      if (tpPrice) payload.tpPrice = Number(tpPrice);
+
+      const res = await axios.patch(BASE, payload, { withCredentials: true });
+
+      if (res.data.success) {
+        // Merge what we sent into the position so UI reflects it immediately
+        onSuccess({
+          slPrice: slPrice ? Number(slPrice) : position.slPrice,
+          tpPrice: tpPrice ? Number(tpPrice) : position.tpPrice,
+          slHit: false,
+          tpHit: false,
+        });
+        showToast("SL/TP updated successfully.", "success");
+        onClose();
+      } else {
+        showToast(res.data.message ?? "Failed to set SL/TP.", "error");
+      }
+    } catch (err: unknown) {
+      const msg = axios.isAxiosError(err)
+        ? (err.response?.data?.message ?? "Network error.")
+        : "Unexpected error.";
+      showToast(msg, "error");
+    } finally {
+      setSubmitting(false);
+    }
+  }
+
+  // ── Remove all SL+TP ──────────────────────────────────────────────────────
+
+  async function handleRemoveAll() {
+    if (submitting || removing) return;
+    setRemoving(true);
+    try {
+      const res = await axios.delete(BASE, { withCredentials: true });
+
+      if (res.data.success) {
+        onSuccess({ slPrice: null, tpPrice: null, slHit: false, tpHit: false });
+        showToast("SL/TP removed.", "success");
+        onClose();
+      } else {
+        showToast(res.data.message ?? "Failed to remove SL/TP.", "error");
+      }
+    } catch (err: unknown) {
+      const msg = axios.isAxiosError(err)
+        ? (err.response?.data?.message ?? "Network error.")
+        : "Unexpected error.";
+      showToast(msg, "error");
+    } finally {
+      setRemoving(false);
+    }
+  }
+
+  // ── Remove individual leg ─────────────────────────────────────────────────
+
+  async function handleRemoveSL() {
+    if (submitting || removing) return;
+    setRemoving(true);
+    try {
+      // Keep existing TP, wipe only SL by patching with just tpPrice
+      const payload: Record<string, unknown> = {};
+      if (position.tpPrice) payload.tpPrice = position.tpPrice;
+
+      const res = await axios.patch(BASE, payload, { withCredentials: true });
+
+      if (res.data.success) {
+        onSuccess({ slPrice: null, slHit: false });
+        setSlPrice("");
+        showToast("Stop Loss removed.", "success");
+      } else {
+        showToast(res.data.message ?? "Failed to remove SL.", "error");
+      }
+    } catch (err: unknown) {
+      const msg = axios.isAxiosError(err)
+        ? (err.response?.data?.message ?? "Network error.")
+        : "Unexpected error.";
+      showToast(msg, "error");
+    } finally {
+      setRemoving(false);
+    }
+  }
+
+  async function handleRemoveTP() {
+    if (submitting || removing) return;
+    setRemoving(true);
+    try {
+      // Keep existing SL, wipe only TP
+      const payload: Record<string, unknown> = {};
+      if (position.slPrice) payload.slPrice = position.slPrice;
+
+      const res = await axios.patch(BASE, payload, { withCredentials: true });
+
+      if (res.data.success) {
+        onSuccess({ tpPrice: null, tpHit: false });
+        setTpPrice("");
+        showToast("Take Profit removed.", "success");
+      } else {
+        showToast(res.data.message ?? "Failed to remove TP.", "error");
+      }
+    } catch (err: unknown) {
+      const msg = axios.isAxiosError(err)
+        ? (err.response?.data?.message ?? "Network error.")
+        : "Unexpected error.";
+      showToast(msg, "error");
+    } finally {
+      setRemoving(false);
+    }
+  }
+
+  const busy = submitting || removing;
+
+  return (
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-md px-4"
+      onClick={(e) => e.target === e.currentTarget && onClose()}
+    >
+      <div className="w-full max-w-sm rounded-2xl border border-white/10 bg-[#0f1117] text-white shadow-2xl">
+        <div className="p-5">
+          {/* Header */}
+          <div className="flex items-center justify-between mb-5">
+            <div>
+              <h2 className="text-base font-semibold tracking-tight">
+                Set SL / TP
+              </h2>
+              <p className="text-xs text-zinc-500 mt-0.5">
+                {position.symbol} ·{" "}
+                <span
+                  className={
+                    position.direction === "LONG"
+                      ? "text-green-400"
+                      : "text-red-400"
+                  }
+                >
+                  {position.direction}
+                </span>{" "}
+                · Avg ${position.avgEntryPrice.toLocaleString()}
+              </p>
+            </div>
+            <button
+              onClick={onClose}
+              className="w-8 h-8 rounded-lg bg-white/5 hover:bg-white/10 transition flex items-center justify-center text-zinc-400"
+            >
+              ✕
+            </button>
+          </div>
+
+          {/* SL row */}
+          <div className="mb-3 rounded-xl border border-red-500/20 bg-red-500/5 p-3">
+            <div className="flex items-center justify-between mb-2">
+              <label className="text-xs text-red-400 font-medium">
+                Stop Loss Price
+              </label>
+              {hasSL && (
+                <button
+                  onClick={handleRemoveSL}
+                  disabled={busy}
+                  className="text-xs px-2 py-0.5 rounded-md bg-red-500/20 hover:bg-red-500/40 text-red-400 border border-red-500/20 transition disabled:opacity-40"
+                >
+                  {removing ? "Removing…" : "Remove SL"}
+                </button>
+              )}
+            </div>
+            <input
+              type="number"
+              min="0"
+              value={slPrice}
+              onChange={(e) => setSlPrice(e.target.value)}
+              placeholder={
+                hasSL ? `Current: $${position.slPrice}` : "No SL set"
+              }
+              className="w-full px-3 py-2.5 rounded-xl bg-white/5 border border-white/10 outline-none focus:border-red-400 transition text-sm placeholder:text-zinc-600"
+            />
+          </div>
+
+          {/* TP row */}
+          <div className="mb-4 rounded-xl border border-green-500/20 bg-green-500/5 p-3">
+            <div className="flex items-center justify-between mb-2">
+              <label className="text-xs text-green-400 font-medium">
+                Take Profit Price
+              </label>
+              {hasTP && (
+                <button
+                  onClick={handleRemoveTP}
+                  disabled={busy}
+                  className="text-xs px-2 py-0.5 rounded-md bg-green-500/20 hover:bg-green-500/40 text-green-400 border border-green-500/20 transition disabled:opacity-40"
+                >
+                  {removing ? "Removing…" : "Remove TP"}
+                </button>
+              )}
+            </div>
+            <input
+              type="number"
+              min="0"
+              value={tpPrice}
+              onChange={(e) => setTpPrice(e.target.value)}
+              placeholder={
+                hasTP ? `Current: $${position.tpPrice}` : "No TP set"
+              }
+              className="w-full px-3 py-2.5 rounded-xl bg-white/5 border border-white/10 outline-none focus:border-green-400 transition text-sm placeholder:text-zinc-600"
+            />
+          </div>
+
+          {/* Direction hint */}
+          <p className="text-xs text-zinc-600 mb-4">
+            {position.direction === "LONG"
+              ? "LONG: SL below entry · TP above entry"
+              : "SHORT: SL above entry · TP below entry"}
+          </p>
+
+          {(slPrice || tpPrice) && sltpPreview && (
+            <div className="mb-4 rounded-2xl border border-white/10 bg-white/5 p-4 space-y-3">
+              <h3 className="text-sm font-semibold text-white">Risk Preview</h3>
+
+              <div className="space-y-2 text-sm">
+                {/* Profit side */}
+                {sltpPreview.profit !== undefined && (
+                  <div className="flex justify-between">
+                    <span className="text-zinc-400">Gross Profit (TP)</span>
+                    <span className="text-green-400 font-medium">
+                      ${sltpPreview.profit.toLocaleString()}
+                    </span>
+                  </div>
+                )}
+
+                {(sltpPreview.profitCharges || sltpPreview.profitGst) && (
+                  <div className="flex justify-between">
+                    <span className="text-zinc-400">Profit Fees</span>
+                    <span className="text-red-400 font-medium">
+                      $
+                      {(
+                        (sltpPreview.profitCharges ?? 0) +
+                        (sltpPreview.profitGst ?? 0)
+                      ).toFixed(2)}
+                    </span>
+                  </div>
+                )}
+
+                {sltpPreview.totalProfit !== undefined && (
+                  <div className="flex justify-between border-b border-white/10 pb-2">
+                    <span className="text-zinc-400">Net Profit</span>
+                    <span className="text-green-400 font-semibold">
+                      ${sltpPreview.totalProfit.toLocaleString()}
+                    </span>
+                  </div>
+                )}
+
+                {/* Risk side */}
+                {sltpPreview.risk !== undefined && (
+                  <div className="flex justify-between">
+                    <span className="text-zinc-400">Gross Loss (SL)</span>
+                    <span className="text-red-400 font-medium">
+                      ${sltpPreview.risk.toLocaleString()}
+                    </span>
+                  </div>
+                )}
+
+                {(sltpPreview.riskCharges || sltpPreview.riskGst) && (
+                  <div className="flex justify-between">
+                    <span className="text-zinc-400">Loss Fees</span>
+                    <span className="text-red-400 font-medium">
+                      $
+                      {(
+                        (sltpPreview.riskCharges ?? 0) +
+                        (sltpPreview.riskGst ?? 0)
+                      ).toFixed(2)}
+                    </span>
+                  </div>
+                )}
+
+                {sltpPreview.totalRisk !== undefined && (
+                  <div className="flex justify-between">
+                    <span className="text-zinc-400">Net Loss</span>
+                    <span className="text-red-400 font-semibold">
+                      ${sltpPreview.totalRisk.toLocaleString()}
+                    </span>
+                  </div>
+                )}
+
+                {/* Margin hint */}
+                {sltpPreview.marginRequired !== undefined && (
+                  <div className="flex justify-between pt-2 border-t border-white/10">
+                    <span className="text-zinc-400">Margin Impact</span>
+                    <span className="text-yellow-400 font-medium">
+                      ${sltpPreview.marginRequired.toLocaleString()}
+                    </span>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+
+          {/* Footer actions */}
+          <div className="flex gap-2">
+            {(hasSL || hasTP) && (
+              <button
+                onClick={handleRemoveAll}
+                disabled={busy}
+                className="flex-1 py-2.5 rounded-xl text-sm font-medium bg-white/5 hover:bg-red-500/20 text-zinc-400 hover:text-red-400 border border-white/10 hover:border-red-500/30 transition disabled:opacity-40"
+              >
+                {removing ? "Removing…" : "Remove All"}
+              </button>
+            )}
+            <button
+              onClick={handleSave}
+              disabled={busy}
+              className="flex-1 py-2.5 rounded-xl text-sm font-semibold bg-cyan-500 hover:bg-cyan-400 text-black transition disabled:opacity-50 flex items-center justify-center gap-2"
+            >
+              {submitting ? (
+                <>
+                  <span className="w-3.5 h-3.5 border-2 border-black/30 border-t-black rounded-full animate-spin" />
+                  Saving…
+                </>
+              ) : (
+                "Save"
+              )}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ─── PositionRow (updated) ────────────────────────────────────────────────────
+
+function PositionRow({
+  position: initialPosition,
   marketPrice,
   onClose,
+  showToast,
 }: {
   position: Position;
   marketPrice: number;
   onClose: (id: string) => void;
+  showToast: (msg: string, type: "success" | "error") => void;
 }) {
+  // Own the position state locally so SL/TP updates reflect instantly
+  const [position, setPosition] = useState(initialPosition);
+  const [showSLTPModal, setShowSLTPModal] = useState(false);
+
   const livePositions: PositionStateItem[] = useSelector(
     (state: RootState) => state.positions.positions,
   );
-  const isLong = position.direction === "LONG" ? true : false;
+  const isLong = position.direction === "LONG";
   const live = livePositions.find((p) => p.positionId === position.id);
   const unrealized = live?.unrealizedPnl ?? 0;
-
   const pnlPositive = unrealized >= 0;
+  const hasSLTP = position.slPrice || position.tpPrice;
+
+  function handleSLTPSuccess(updated: Partial<Position>) {
+    setPosition((prev) => ({ ...prev, ...updated }));
+  }
 
   return (
-    <div className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 hover:bg-white/[0.07] transition">
-      <div className="flex items-center justify-between">
-        {/* LEFT */}
-        <div className="space-y-1.5">
-          <div className="flex items-center gap-2 flex-wrap">
-            <span className="text-white font-semibold text-sm">
-              {position.symbol}
-            </span>
+    <>
+      {showSLTPModal && (
+        <SLTPModal
+          position={position}
+          onClose={() => setShowSLTPModal(false)}
+          onSuccess={handleSLTPSuccess}
+          showToast={showToast}
+        />
+      )}
 
-            <span
-              className={`text-xs px-2 py-0.5 rounded-md font-medium ${
-                isLong
-                  ? "bg-green-500/15 text-green-400"
-                  : "bg-red-500/15 text-red-400"
-              }`}
-            >
-              {position.direction}
-            </span>
-
-            <span className="text-xs px-2 py-0.5 rounded-md bg-cyan-500/15 text-cyan-400">
-              {position.leverage}x
-            </span>
-
-            {!position.isOpen && (
-              <span className="text-xs px-2 py-0.5 rounded-md bg-zinc-500/15 text-zinc-400">
-                CLOSED
+      <div className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 hover:bg-white/[0.07] transition">
+        <div className="flex items-center justify-between">
+          {/* LEFT */}
+          <div className="space-y-1.5">
+            <div className="flex items-center gap-2 flex-wrap">
+              <span className="text-white font-semibold text-sm">
+                {position.symbol}
               </span>
+              <span
+                className={`text-xs px-2 py-0.5 rounded-md font-medium ${
+                  isLong
+                    ? "bg-green-500/15 text-green-400"
+                    : "bg-red-500/15 text-red-400"
+                }`}
+              >
+                {position.direction}
+              </span>
+              <span className="text-xs px-2 py-0.5 rounded-md bg-cyan-500/15 text-cyan-400">
+                {position.leverage}x
+              </span>
+              {!position.isOpen && (
+                <span className="text-xs px-2 py-0.5 rounded-md bg-zinc-500/15 text-zinc-400">
+                  CLOSED
+                </span>
+              )}
+            </div>
+
+            <p className="text-xs text-zinc-500">
+              Qty: {position.quantity.toLocaleString()} · Avg: $
+              {position.avgEntryPrice.toLocaleString()}
+            </p>
+
+            <p className="text-xs text-zinc-600">
+              Margin Used: ${position.marginUsed.toLocaleString()}
+            </p>
+
+            {hasSLTP && (
+              <p className="text-xs">
+                {position.slPrice && (
+                  <span className="text-red-400 mr-2">
+                    SL ${position.slPrice}
+                    {position.slHit ? " ✓" : ""}
+                  </span>
+                )}
+                {position.tpPrice && (
+                  <span className="text-green-400">
+                    TP ${position.tpPrice}
+                    {position.tpHit ? " ✓" : ""}
+                  </span>
+                )}
+              </p>
             )}
           </div>
 
-          <p className="text-xs text-zinc-500">
-            Qty: {position.quantity.toLocaleString()} · Avg: $
-            {position.avgEntryPrice.toLocaleString()}
-          </p>
-
-          <p className="text-xs text-zinc-600">
-            Margin Used: ${position.marginUsed.toLocaleString()}
-          </p>
-
-          {(position.slPrice || position.tpPrice) && (
-            <p className="text-xs text-zinc-500">
-              {position.slPrice && (
-                <span className="text-red-400 mr-2">
-                  SL ${position.slPrice}
-                  {position.slHit ? " ✓" : ""}
-                </span>
-              )}
-
-              {position.tpPrice && (
-                <span className="text-green-400">
-                  TP ${position.tpPrice}
-                  {position.tpHit ? " ✓" : ""}
-                </span>
-              )}
+          {/* RIGHT */}
+          <div className="text-right shrink-0 ml-4 space-y-1.5">
+            <p className="text-sm font-semibold text-white">
+              Mark: ${marketPrice}
             </p>
-          )}
-        </div>
-
-        {/* RIGHT */}
-        <div className="text-right shrink-0 ml-4">
-          <p className="text-sm font-semibold text-white">
-            Mark: ${marketPrice}
-          </p>
-
-          <p
-            className={`text-sm font-semibold ${
-              pnlPositive ? "text-green-400" : "text-red-400"
-            }`}
-          >
-            {pnlPositive ? "+" : ""}$
-            {unrealized.toLocaleString(undefined, {
-              maximumFractionDigits: 2,
-            })}
-          </p>
-
-          <p className="text-xs text-zinc-600 mt-0.5">
-            {new Date(position.createdAt).toLocaleDateString("en-US", {
-              dateStyle: "short",
-            })}
-          </p>
-
-          {position.isOpen && (
-            <button
-              onClick={() => onClose(position.id)}
-              className="mt-2 px-3 py-1 text-xs rounded-lg bg-orange-500/15 hover:bg-orange-500 text-orange-400 hover:text-black border border-orange-500/20 transition"
+            <p
+              className={`text-sm font-semibold ${pnlPositive ? "text-green-400" : "text-red-400"}`}
             >
-              Close
-            </button>
-          )}
+              {pnlPositive ? "+" : ""}$
+              {unrealized.toLocaleString(undefined, {
+                maximumFractionDigits: 2,
+              })}
+            </p>
+            <p className="text-xs text-zinc-600">
+              {new Date(position.createdAt).toLocaleDateString("en-US", {
+                dateStyle: "short",
+              })}
+            </p>
+
+            {position.isOpen && (
+              <div className="flex gap-1.5 justify-end flex-wrap">
+                <button
+                  onClick={() => setShowSLTPModal(true)}
+                  className="px-3 py-1 text-xs rounded-lg bg-cyan-500/15 hover:bg-cyan-500 text-cyan-400 hover:text-black border border-cyan-500/20 transition"
+                >
+                  {hasSLTP ? "Edit SL/TP" : "Set SL/TP"}
+                </button>
+                <button
+                  onClick={() => onClose(position.id)}
+                  className="px-3 py-1 text-xs rounded-lg bg-orange-500/15 hover:bg-orange-500 text-orange-400 hover:text-black border border-orange-500/20 transition"
+                >
+                  Close
+                </button>
+              </div>
+            )}
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 }
 

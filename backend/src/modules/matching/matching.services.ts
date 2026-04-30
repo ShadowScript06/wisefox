@@ -150,6 +150,8 @@ async function matchOrder(orderId: string): Promise<void> {
         price: currentPrice,
         leverage: order.leverage,
         marginUsed: requiredMargin,
+        slPrice:order.slPrice,
+        tpPrice:order.tpPrice
       },
       tx,
     );
@@ -168,9 +170,7 @@ async function matchOrder(orderId: string): Promise<void> {
           where: { id: position.id },
           data: {
             slPrice: order.slPrice ?? null,
-            slQty: order.slQty ?? null,
             tpPrice: order.tpPrice ?? null,
-            tpQty: order.tpQty ?? null,
           },
         });
       }
