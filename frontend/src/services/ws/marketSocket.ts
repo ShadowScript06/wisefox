@@ -1,14 +1,10 @@
-
-import { updatePrices } from "../../redux/marketSlice";
+import { updatePrices } from "../../redux/marketPriceSlice";
+import { setPositions } from "../../redux/positionsSlice";
 import type { AppDispatch } from "../../redux/store";
 
-let socket:WebSocket|null = null;
+let socket: WebSocket | null = null;
 
-
-
-
-export function openWS(dispatch:AppDispatch) {
-    
+export function openWS(dispatch: AppDispatch) {
   socket = new WebSocket("ws://localhost:5000");
 
   socket.onopen = () => {
@@ -18,8 +14,33 @@ export function openWS(dispatch:AppDispatch) {
   socket.onmessage = (event) => {
     try {
       const msg = JSON.parse(event.data);
-      
-      dispatch(updatePrices(msg.data));
+
+      switch (msg.type) {
+        case "SNAPSHOT":
+        case "TICK":
+          dispatch(updatePrices(msg.data));
+          break;
+
+        case "PNL_UPDATE":
+          dispatch(setPositions(msg.data));
+          break;
+
+        case "LIQUIDATED":{
+          const date = new Date();
+          console.log(date.toLocaleTimeString());
+          console.log(msg);
+          break;
+        }
+
+        case "MARGIN_CALL": {
+          const date = new Date();
+          console.log(date.toLocaleTimeString());
+          console.log(msg);
+          break;
+        }
+        default:
+          console.log("Unknown WS msg:", msg.type);
+      }
     } catch (error) {
       console.log("WS error:", error);
     }

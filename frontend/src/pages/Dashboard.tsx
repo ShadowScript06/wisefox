@@ -42,7 +42,7 @@ function Dashboard() {
 
   const [accountName, setAccountName] = useState<string>("");
 
-  const [balance, setBalance] = useState<number>(0);
+  const [balance, setBalance] = useState<string>("");
 
   const [accounts, setAccounts] = useState<Account[]>([]);
 
@@ -52,7 +52,7 @@ function Dashboard() {
         `${import.meta.env.VITE_BACKEND_URL}/accounts`,
         {
           name: accountName,
-          balance,
+          balance:parseFloat(balance),
         },
         { withCredentials: true },
       );
@@ -60,7 +60,7 @@ function Dashboard() {
       if (response.data.success) {
         setAccounts((prev) => [...prev, response.data.data]);
         setAccountName("");
-        setBalance(0);
+        setBalance("");
       }
     } catch (error) {
       if (error instanceof Error) alert(error.message);
@@ -169,10 +169,10 @@ function Dashboard() {
           A/C Balance
         </label>
         <input
-          type="number"
+          type="text"
           placeholder="$1000"
           value={balance}
-          onChange={(e) => setBalance(parseFloat(e.target.value))}
+          onChange={(e) => setBalance(e.target.value)}
           className="w-full px-4 py-2 bg-gray-900 border border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
         />
       </div>

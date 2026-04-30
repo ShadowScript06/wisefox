@@ -1,10 +1,11 @@
 import { Position } from "../../generated/prisma/client";
 import { Direction } from "../../generated/prisma/enums";
 import { prisma } from "../../lib/prisma";
+import { upsertAccount } from "../../utils/cache/accountCache";
+import cachedPositions, { removePositionCache, upsertPositionCache } from "../../utils/cache/positionCache";
 import { getLivePrice } from "../../utils/fetchPrices/price.utils";
 import { calcRequiredMargin } from "../../utils/margin.utils";
 import { calcPnlAndCharges } from "../../utils/pnl.utils";
-
 
 interface TradeInput {
   id: string;
@@ -28,7 +29,6 @@ function calcAvgEntry(
   );
 }
 
-
 async function processTradeIntoPosition(
   trade: TradeInput,
   tx: any,
@@ -43,8 +43,7 @@ async function processTradeIntoPosition(
 
   // ─── Scenario A: No open position → just open one ───────────────────
   if (!existingPosition) {
-    
-    await tx.position.create({
+    const position = await tx.position.create({
       data: {
         accountId: trade.accountId,
         symbol: trade.symbol,
@@ -55,6 +54,9 @@ async function processTradeIntoPosition(
         marginUsed: trade.marginUsed,
       },
     });
+
+    upsertPositionCache(trade.accountId,trade.symbol,position);
+
 
     await tx.trade.update({
       where: {
@@ -88,7 +90,7 @@ async function processTradeIntoPosition(
       trade.price,
     );
 
-    await tx.position.update({
+    const updatedPosition=await tx.position.update({
       where: { id: existingPosition.id },
       data: {
         quantity: newQty,
@@ -96,6 +98,13 @@ async function processTradeIntoPosition(
         marginUsed: { increment: trade.marginUsed },
       },
     });
+
+    upsertPositionCache(trade.accountId,trade.symbol,updatedPosition);
+
+
+
+
+
 
     await tx.trade.update({
       where: { id: trade.id },
@@ -108,146 +117,187 @@ async function processTradeIntoPosition(
   // ─── Scenario C: Opposite side → net / flip ──────────────────────────
 
   const remainingQty = existingPosition.quantity - trade.quantity;
-
-  const marginToRelease =
-    (existingPosition.marginUsed * trade.quantity) / existingPosition.quantity;
-
-    
-
-  // PnL on the closed portion
-  const result = calcPnlAndCharges(
-    existingPosition.direction,
-    existingPosition.avgEntryPrice,
-    trade.price,
-    trade.quantity,
-  );
-
-  await tx.trade.update({
-    where: { id: trade.id },
-    data: { realizedPnl: result.realizedPnl, charges: result.charges },
-  });
-
-  // update account balance
-  await tx.account.update({
-    where: { id: trade.accountId },
-    data: {
-      balance: { increment: result.realizedPnl + marginToRelease },
-      marginUsed: { decrement: marginToRelease },
-      netPnl: {
-        increment: result.realizedPnl,
-      },
-      charges: {
-        increment: result.charges,
-      },
-    },
-  });
-
   // Close Partial
   if (remainingQty > 0) {
-    await tx.position.update({
+    const marginToRelease =
+      (existingPosition.marginUsed * trade.quantity) /
+      existingPosition.quantity;
+
+    // PnL on the closed portion
+    const result = calcPnlAndCharges(
+      existingPosition.direction,
+      existingPosition.avgEntryPrice,
+      trade.price,
+      trade.quantity,
+    );
+
+    await tx.trade.update({
+      where: { id: trade.id },
+      data: { realizedPnl: result.realizedPnl, charges: result.charges },
+    });
+
+    // update account balance
+    const updatedAccount=await tx.account.update({
+      where: { id: trade.accountId },
+      data: {
+        balance: { increment: result.realizedPnl + marginToRelease },
+        marginUsed: { decrement: marginToRelease },
+        netPnl: {
+          increment: result.realizedPnl,
+        },
+        charges: {
+          increment: result.charges,
+        },
+      },
+    });
+
+    upsertAccount(updatedAccount);
+
+    const updatedPosition=await tx.position.update({
       where: { id: existingPosition.id },
       data: {
         quantity: { decrement: trade.quantity },
         realizedPnl: { increment: result.realizedPnl },
-        marginUsed:{
-          decrement:marginToRelease
-        }
+        marginUsed: {
+          decrement: marginToRelease,
+        },
       },
     });
 
+   upsertPositionCache(trade.accountId,trade.symbol,updatedPosition);
+
+
     // close fully
   } else if (remainingQty === 0) {
+    const result = calcPnlAndCharges(
+      existingPosition.direction,
+      existingPosition.avgEntryPrice,
+      trade.price,
+      trade.quantity,
+    );
+
+    const fullMargin = existingPosition.marginUsed;
+
+    await tx.trade.update({
+      where: { id: trade.id },
+      data: {
+        realizedPnl: result.realizedPnl,
+        charges: result.charges,
+      },
+    });
+
+    const updatedAccount=await tx.account.update({
+      where: { id: trade.accountId },
+      data: {
+        balance: {
+          increment: result.realizedPnl + fullMargin,
+        },
+        marginUsed: {
+          decrement: fullMargin,
+        },
+        netPnl: {
+          increment: result.realizedPnl,
+        },
+        charges: {
+          increment: result.charges,
+        },
+      },
+    });
+
+    upsertAccount(updatedAccount);
+
     await tx.position.update({
       where: { id: existingPosition.id },
       data: {
         quantity: 0,
-        realizedPnl: { increment: result.realizedPnl},
+        realizedPnl: { increment: result.realizedPnl },
         isOpen: false,
-        marginUsed:{
-          decrement:marginToRelease
-        }
+        marginUsed: 0,
       },
     });
+
+    removePositionCache(trade.accountId,trade.symbol);
+
   }
 
   // flip position i.e. close current postion and take position on opposite side with remaining qty
   else if (remainingQty < 0) {
+    const currentQty = Math.abs(remainingQty);
 
-     await tx.position.update({
-      where: { id: existingPosition.id },
+    const closeResult = calcPnlAndCharges(
+      existingPosition.direction,
+      existingPosition.avgEntryPrice,
+      trade.price,
+      existingPosition.quantity,
+    );
+
+    const oldMargin = existingPosition.marginUsed;
+
+    const updatedAccount=await tx.account.update({
+      where: { id: trade.accountId },
       data: {
-        quantity: { decrement: 0 },
-        realizedPnl: { increment: result.realizedPnl },
-        isOpen: false,
-        marginUsed:{
-          decrement:marginToRelease
-        }
+        balance: {
+          increment: closeResult.realizedPnl + oldMargin,
+        },
+        marginUsed: {
+          decrement: oldMargin,
+        },
+        netPnl: {
+          increment: closeResult.realizedPnl,
+        },
+        charges: {
+          increment: closeResult.charges,
+        },
       },
     });
 
-    const currentQty = remainingQty * -1;
+    upsertAccount(updatedAccount);
 
-    const requiredMargin=calcRequiredMargin(currentQty,trade.price,trade.leverage);
+    await tx.position.update({
+      where: { id: existingPosition.id },
+      data: {
+        quantity: 0,
+        isOpen: false,
+        marginUsed: 0,
+        realizedPnl: { increment: closeResult.realizedPnl },
+      },
+    });
 
+    removePositionCache(trade.accountId,trade.symbol)
+
+    // STEP 2: OPEN NEW POSITION
+    const newMargin = calcRequiredMargin(
+      currentQty,
+      trade.price,
+      trade.leverage,
+    );
+
+    const updatedAccount2=await tx.account.update({
+      where: { id: trade.accountId },
+      data: {
+        balance: { decrement: newMargin },
+        marginUsed: { increment: newMargin },
+      },
+    });
+
+    upsertAccount(updatedAccount2);
     
-
-    await tx.account.update({
-        where: { id: trade.accountId },
-        data: {
-          marginUsed: { increment: requiredMargin },
-          balance: { decrement: requiredMargin },
-        },
-      });
-
-    await tx.position.create({
+    const newPosition=await tx.position.create({
       data: {
         accountId: trade.accountId,
         symbol: trade.symbol,
-        direction: trade.direction, // new direction
+        direction: trade.direction,
         quantity: currentQty,
         avgEntryPrice: trade.price,
         leverage: trade.leverage,
-        marginUsed: trade.marginUsed,
+        marginUsed: newMargin,
+        isOpen: true,
       },
     });
+
+     upsertPositionCache(trade.accountId,trade.symbol,newPosition);
+
   }
-
-  return;
-
-  // if (remainingQty === 0) {
-  //   // exact close — position fully closed
-  //   await tx.position.update({
-  //     where: { id: existingPosition.id },
-  //     data: {
-  //       isOpen: false,
-  //       quantity: 0,
-  //       realizedPnl: { increment: realizedPnl },
-  //     },
-  //   });
-  // } else {
-  //   // flip — close existing, open new in opposite direction
-  //   await tx.position.update({
-  //     where: { id: existingPosition.id },
-  //     data: {
-  //       isOpen: false,
-  //       quantity: 0,
-  //       marginUsed: 0,
-  //       realizedPnl: { increment: realizedPnl },
-  //     },
-  //   });
-
-  //   await tx.position.create({
-  //     data: {
-  //       accountId: trade.accountId,
-  //       symbol: trade.symbol,
-  //       direction: trade.direction, // new direction
-  //       quantity: remainingQty,
-  //       avgEntryPrice: trade.price,
-  //       leverage: trade.leverage,
-  //       marginUsed: trade.marginUsed,
-  //     },
-  //   });
-  // }
 }
 
 const getPositions = async (accountId: string) => {
@@ -271,6 +321,8 @@ const getTradeHistory = async (accountId: string) => {
       createdAt: "desc",
     },
   });
+
+  return trades;
 };
 const positionServices = {
   processTradeIntoPosition,

@@ -1,11 +1,12 @@
 import { configureStore } from "@reduxjs/toolkit";
 
-import marketReducer from "./marketSlice";
-
+import marketReducer from "./marketPriceSlice";
+import positionsReducer from "./positionsSlice";
 
 export const store=configureStore({
     reducer:{
-        market:marketReducer
+        market:marketReducer,
+        positions:positionsReducer
     }
 })
 

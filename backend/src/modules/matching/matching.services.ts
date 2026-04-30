@@ -1,6 +1,8 @@
 import redisClients from "../../config/redis/redis";
-import {  Order } from "../../generated/prisma/client";
+import { Order, Position } from "../../generated/prisma/client";
 import { prisma } from "../../lib/prisma";
+import { upsertAccount } from "../../utils/cache/accountCache";
+import pendingOrders from "../../utils/cache/orderCache";
 import { getLivePrice } from "../../utils/fetchPrices/price.utils";
 import { calcRequiredMargin } from "../../utils/margin.utils";
 import positionServices from "../position/position.service";
@@ -15,6 +17,17 @@ function shouldFill(order: Order, currentPrice: number): boolean {
   if (order.direction === "SHORT") return currentPrice >= order.price;
 
   return false;
+}
+
+function isClosingOrder(position: Position | null, order: Order): boolean {
+  if (!position) return false;
+
+  return (
+    position.symbol === order.symbol &&
+    position.direction !== order.direction &&
+    position.quantity >= order.quantity && 
+    order.type==="MARKET"
+  );
 }
 
 async function matchOrder(orderId: string): Promise<void> {
@@ -56,6 +69,13 @@ async function matchOrder(orderId: string): Promise<void> {
 
     if (!account[0]) throw new Error("Account not found");
 
+    const existingPosition = await tx.position.findFirst({
+      where: {
+        accountId: order.accountId,
+        symbol: order.symbol,
+        isOpen: true,
+      },
+    });
     const { balance, marginUsed } = account[0];
 
     const requiredMargin = calcRequiredMargin(
@@ -64,19 +84,25 @@ async function matchOrder(orderId: string): Promise<void> {
       order.leverage,
     );
 
-    const freeMargin = balance - marginUsed;
+    const freeMargin = balance;
 
-    // 2. margin check
-    if (requiredMargin > freeMargin) {
-      // cancel the order — not enough margin
-      await tx.order.update({
-        where: { id: order.id },
-        data: { status: "CANCELLED", cancelledAt: new Date() },
-      });
-      console.log(
-        `Order ${order.id} cancelled — insufficient margin. Required: ${requiredMargin}, Free: ${freeMargin}`,
-      );
-      return;
+    // 1. If this is a closing order → ALWAYS allow
+    if (isClosingOrder(existingPosition, order)) {
+      // proceed to close logic (no margin check)
+    } else {
+      // 2. Only opening / increasing needs margin check
+      if (requiredMargin > freeMargin) {
+        await tx.order.update({
+          where: { id: order.id },
+          data: { status: "CANCELLED", cancelledAt: new Date() },
+        });
+
+        console.log(
+          `Order ${order.id} cancelled — insufficient margin. Required: ${requiredMargin}, Free: ${freeMargin}`,
+        );
+
+        return;
+      }
     }
 
     // 3. create trade
@@ -101,24 +127,18 @@ async function matchOrder(orderId: string): Promise<void> {
       },
     });
 
-    const existingPosition = await tx.position.findFirst({
-      where: {
-        accountId: trade.accountId,
-        symbol: trade.symbol,
-        isOpen: true,
-      },
-    });
-
-    if (!existingPosition || existingPosition.direction === trade.direction ) {
+    if (!existingPosition || existingPosition.direction === trade.direction) {
       // 5. reserve margin on account
-      await tx.account.update({
+      const updatedAccount=await tx.account.update({
         where: { id: order.accountId },
         data: {
           marginUsed: { increment: requiredMargin },
           balance: { decrement: requiredMargin },
         },
       });
+       upsertAccount(updatedAccount);
     }
+   
     // 6. process into position (pass leverage + marginUsed)
     await positionServices.processTradeIntoPosition(
       {
@@ -157,16 +177,22 @@ async function matchOrder(orderId: string): Promise<void> {
     }
   });
 }
+
 async function matchPendingOrders(): Promise<void> {
-  const order = (await redisClients.consumer.brpop("orders", 0)) as any;
-
-  const orderId = order[1];
-
-  if (orderId) {
-    await matchOrder(orderId).catch((err) => {
-      console.error(`Failed to match order ${orderId}:`, err.message);
-    });
+  const orders = [...pendingOrders];
+  for (const order of orders) {
+    if (order.id) {
+      await matchOrder(order.id).catch((err) => {
+        console.error(`Failed to match order ${order.id}:`, err.message);
+      });
+    }
   }
+
+  pendingOrders.splice(
+    0,
+    pendingOrders.length,
+    ...pendingOrders.filter((order) => order.status === "PENDING"),
+  );
 }
 
 const matchingServices = {

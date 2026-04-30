@@ -1,7 +1,6 @@
 import { Request, Response } from "express";
 import accountServices from "./account.services";
-import { success } from "zod";
-accountServices
+
 async function createAccount(request:Request,response:Response):Promise<void>{
 try {
     const {name,balance}=request.body;

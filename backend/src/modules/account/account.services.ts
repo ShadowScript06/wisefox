@@ -1,4 +1,5 @@
 import { prisma } from "../../lib/prisma";
+import { removeAccount, upsertAccount } from "../../utils/cache/accountCache";
 
 const createAccount=async(name:string,balance:number,userId:string)=>{
     const account=await prisma.account.create({
@@ -8,6 +9,8 @@ const createAccount=async(name:string,balance:number,userId:string)=>{
             userId
         }
     })
+
+    upsertAccount(account);
 
     return account;
 }
@@ -43,6 +46,8 @@ const deleteAccount=async(userId:string,accountId:string)=>{
             id:accountId
         }
     });
+
+    removeAccount(accountId);
 
     return account;
 }

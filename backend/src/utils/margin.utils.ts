@@ -12,9 +12,11 @@ export function calcRequiredMargin(
 // margin level = (balance / marginUsed) × 100
 // below 100% = margin call territory
 // below 50%  = liquidation territory
-export function calcMarginLevel(balance: number, marginUsed: number): number {
+export function calcMarginLevel(equity: number, marginUsed: number): number {
+
+  
   if (marginUsed === 0) return Infinity
-  return (balance / marginUsed) * 100
+  return (equity / marginUsed) * 100
 }
 
 export async  function checkIsMarginAvailable(accountId:string,tx:any,quantity:number,currentPrice:number,leverage:number,orderId:string){

@@ -1,4 +1,3 @@
-
 import redisClients from "../../config/redis/redis";
 import {
   Direction,
@@ -6,6 +5,7 @@ import {
   orderType,
 } from "../../generated/prisma/enums";
 import { prisma } from "../../lib/prisma";
+import pendingOrders from "../../utils/cache/orderCache";
 
 import matchingServices from "../matching/matching.services";
 
@@ -76,18 +76,13 @@ const placeOrder = async (input: PlaceOrderInput) => {
     },
   });
 
-
-   await matchingServices.matchOrder(order.id).catch((err) => {
+  if (order.type === "MARKET") {
+    await matchingServices.matchOrder(order.id).catch((err) => {
       console.error(`Failed to match order ${order.id}:`, err.message);
     });
-  
-  // redisClients.producer.lpush('orders',String(order.id));
-
-  // matchingServices
-  //   .matchOrder(order.id)
-  //   .catch((err) =>
-  //     console.error(`matchOrder failed for ${order.id}:`, err.message),
-  //   );
+  } else {
+    pendingOrders.push(order);
+  }
 
   return order;
 };
@@ -131,14 +126,38 @@ const getOrders = async (
 };
 
 async function expireOrders(): Promise<number> {
-  const result = await prisma.order.updateMany({
-    where: {
-      status: "PENDING",
-      expiresAt: { lte: new Date() },
-    },
-    data: { status: "EXPIRED" },
+  const now = new Date();
+
+  
+  const expired = pendingOrders.filter((o) => {
+    if (o.status !== "PENDING") return false;
+    if (!o.expiresAt) return false;
+
+    return o.expiresAt <= now;
   });
-  return result.count;
+
+  if (expired.length === 0) return 0;
+
+  for (const order of expired) {
+    order.status = "EXPIRED";
+  }
+
+  pendingOrders.splice(
+    0,
+    pendingOrders.length,
+    ...pendingOrders.filter((o) => o.status === "PENDING"),
+  );
+
+  await prisma.order.updateMany({
+    where: {
+      id: { in: expired.map((o) => o.id) },
+    },
+    data: {
+      status: "EXPIRED",
+    },
+  });
+
+  return expired.length;
 }
 const orderServices = {
   placeOrder,

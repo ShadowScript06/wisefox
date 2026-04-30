@@ -34,8 +34,8 @@ model Account{
   positions Position[]
   marginUsed Float @default(0)
   auditLogs AuditLog[]
-  netPnl Float?
-  charges Float?
+  netPnl Float? @default(0)
+  charges Float? @default(0)
 }
 
 model Order{
@@ -108,7 +108,7 @@ model Trade{
 model AuditLog {
   id        String      @id @default(uuid())
   accountId String
-  account   Account     @relation(fields: [accountId], references: [id])
+  account   Account     @relation(fields: [accountId], references: [id],onDelete: Cascade)
   type      AuditType
   message   String
   meta      Json?       // any extra data — prices, quantities etc

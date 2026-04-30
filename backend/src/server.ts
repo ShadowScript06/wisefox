@@ -13,6 +13,10 @@ import pnlServices from "./modules/pnl/pnl.services";
 import liquidationService from "./modules/liquidation/liquidation.services";
 import sltpService from './modules/sltp/sltp.services'
 import redisClients from "./config/redis/redis";
+import pendingOrders, { refreshPendingOrdersCache } from "./utils/cache/orderCache";
+import { refreshPositionsCache } from "./utils/cache/positionCache";
+import { refreshAccountsCache } from "./utils/cache/accountCache";
+dotenv.config();
 
 
 
@@ -73,60 +77,72 @@ setInterval(async () => {
     // price tick
     client.send(JSON.stringify({ type: "TICK", data: livePrices }));
 
-    // unrealized PnL
-  //   const pnl = await pnlServices
-  //     .getUnrealisedPnlForAccount(accountId)
-  //     .catch(() => []);
+    //unrealized PnL
+    const pnl = await pnlServices
+      .getUnrealisedPnlForAccount(accountId)
+      .catch(() => []);
 
-  //   if (pnl.length > 0) {
-  //     client.send(JSON.stringify({ type: "PNL_UPDATE", data: pnl }));
-  //   }
+    if (pnl.length > 0) {
+      client.send(JSON.stringify({ type: "PNL_UPDATE", data: pnl }));
+    }
 
   //   // liquidation check
-  //   const { marginCall, liquidated } = await liquidationService
-  //     .checkAndLiquidate(accountId)
-  //     .catch(() => ({ marginCall: false, liquidated: false }));
+    const { marginCall, liquidated } = await liquidationService
+      .checkAndLiquidate(accountId)
+      .catch(() => ({ marginCall: false, liquidated: false }));
 
-  //   if (marginCall) {
-  //     client.send(
-  //       JSON.stringify({
-  //         type: "MARGIN_CALL",
-  //         message:
-  //           "Warning: your margin level is below 100%. Add funds or close positions.",
-  //       })
-  //     );
-  //   }
+    if (marginCall) {
+      client.send(
+        JSON.stringify({
+          type: "MARGIN_CALL",
+          message:
+            "Warning: your margin level is below 100%. Add funds or close positions.",
+        })
+      );
+    }
 
-  //   if (liquidated) {
-  //     client.send(
-  //       JSON.stringify({
-  //         type: "LIQUIDATED",
-  //         message:
-  //           "Your positions have been liquidated due to insufficient margin.",
-  //       })
-  //     );
-  //   }
-  // }
+    if (liquidated) {
+      client.send(
+        JSON.stringify({
+          type: "LIQUIDATED",
+          message:
+            "Your positions have been liquidated due to insufficient margin.",
+        })
+      );
+    }
+  
 
-  // 3. expire stale orders
-  // await orderServices.expireOrders().catch((err) =>
-  //   console.error("expireOrders error:", err.message)
-  // );
+ // 3. expire stale orders
+  await orderServices.expireOrders().catch((err) =>
+    console.error("expireOrders error:", err.message)
+  );
 
   // 4. match pending orders
   await matchingServices
     .matchPendingOrders()
     .catch((err) => console.error("matchPendingOrders error:", err.message));
 
-
+//  5. check sl tp
   //   await sltpService
   // .checkSLTPForAllPositions()
   // .catch((err) => console.error('SLTP check error:', err.message))
   }
 }, 2000);
 
+
+setInterval(async () => {
+  await refreshPendingOrdersCache();
+  await refreshAccountsCache();
+  await refreshPositionsCache();
+
+}, 60 * 60 * 1000); // 1 hour
+
 server.listen(PORT, async () => {
+
   getPrices();
   redisClients.connectRedis();
+  await refreshPendingOrdersCache();
+  await refreshAccountsCache();
+  await refreshPositionsCache();
   console.log("Server running on port " + PORT);
 });

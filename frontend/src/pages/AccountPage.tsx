@@ -7,6 +7,7 @@ import {
   calculateTrade,
   type TradeResult,
 } from "../services/trading/positionSizeCalculator";
+import type { PositionStateItem } from "../redux/positionsSlice";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -143,6 +144,10 @@ function AccountPage() {
   const [orders, setOrders] = useState<Order[]>([]);
   const [positions, setPositions] = useState<Position[]>([]);
 
+  const totalPnl = useSelector(
+    (state: RootState) => state.positions.totalUnrealizedPnl,
+  );
+
   const [isOpenModal, setIsOpenModal] = useState(false);
   const [symbol, setSymbol] = useState<SymbolKey>("BTCUSD");
   const [form, setForm] = useState(DEFAULT_FORM);
@@ -181,7 +186,7 @@ function AccountPage() {
       stopLoss: form.slPrice ? Number(form.slPrice) : 0,
       target: form.tpPrice ? Number(form.tpPrice) : 0,
       direction: form.direction,
-      leverage:form.leverage? Number(form.leverage): 1
+      leverage: form.leverage ? Number(form.leverage) : 1,
     });
   }, [
     form.quantity,
@@ -189,7 +194,7 @@ function AccountPage() {
     form.slPrice,
     form.tpPrice,
     form.direction,
-    form.leverage
+    form.leverage,
   ]);
 
   // ── Toast helper ────────────────────────────────────────────────────────────
@@ -251,7 +256,7 @@ function AccountPage() {
     return () => {
       cancelled = true;
     };
-  }, [id, showToast,orders]);
+  }, [id, showToast, orders]);
 
   // ── Modal open/close ────────────────────────────────────────────────────────
 
@@ -329,6 +334,80 @@ function AccountPage() {
       showToast(msg, "error");
     } finally {
       setSubmitting(false);
+    }
+  }
+
+  async function handleClosePosition(position: Position) {
+    if (submitting) return;
+
+    setSubmitting(true);
+
+    try {
+      const oppositeDirection =
+        position.direction === "LONG" ? "SHORT" : "LONG";
+
+      const closePrice =
+        position.symbol === "XAUUSD"
+          ? Number(prices["PAXGUSD"])
+          : Number(prices["BTCUSD"]);
+
+      const payload = {
+        symbol: position.symbol,
+        direction: oppositeDirection,
+        type: "MARKET",
+        quantity: position.quantity,
+        price: closePrice, // uses your existing useMemo marketPrice
+        ttlSeconds: TTL_MAP["5m"],
+        leverage: position.leverage,
+      };
+
+      const response = await axios.post(
+        `${import.meta.env.VITE_BACKEND_URL}/accounts/${id}/orders`,
+        payload,
+        { withCredentials: true },
+      );
+
+      if (response.data.success) {
+        setOrders((prev) => [response.data.data, ...prev]);
+        showToast("Position closed successfully.", "success");
+      } else {
+        showToast(
+          response.data.message ?? "Failed to close position.",
+          "error",
+        );
+      }
+    } catch (err: unknown) {
+      const msg = axios.isAxiosError(err)
+        ? (err.response?.data?.message ?? "Network error.")
+        : "Unexpected error.";
+
+      showToast(msg, "error");
+    } finally {
+      setSubmitting(false);
+    }
+  }
+
+  async function handleCancelOrder(orderId: string) {
+    try {
+      const res = await axios.delete(
+        `${import.meta.env.VITE_BACKEND_URL}/accounts/${id}/orders/${orderId}`,
+
+        { withCredentials: true },
+      );
+
+      if (res.data.success) {
+        setOrders((prev) =>
+          prev.map((o) =>
+            o.id === orderId ? { ...o, status: "CANCELLED" } : o,
+          ),
+        );
+
+        showToast("Order cancelled successfully.", "success");
+      } else {
+        showToast(res.data.message || "Failed to cancel order.", "error");
+      }
+    } catch {
+      showToast("Failed to cancel order.", "error");
     }
   }
 
@@ -428,10 +507,11 @@ function AccountPage() {
             color="green"
           />
           <StatCard
-            label="Open Orders"
-            value={String(orders.filter((o) => o.status === "OPEN").length)}
-            sub={`${orders.length} total`}
-            color="purple"
+            label="PnL"
+            value={`$${totalPnl.toLocaleString(undefined, {
+              maximumFractionDigits: 2,
+            })}`}
+            color={totalPnl >= 0 ? "green" : "orange"}
           />
         </div>
 
@@ -479,7 +559,12 @@ function AccountPage() {
             ) : (
               <div className="space-y-2 mb-6">
                 {positions.map((position) => (
-                  <PositionRow key={position.id} position={position} marketPrice={marketPrice} />
+                  <PositionRow
+                    key={position.id}
+                    position={position}
+                    marketPrice={marketPrice}
+                    onClose={() => handleClosePosition(position)}
+                  />
                 ))}
               </div>
             )}
@@ -497,7 +582,11 @@ function AccountPage() {
             ) : (
               <div className="space-y-2">
                 {orders.map((order) => (
-                  <OrderRow key={order.id} order={order} />
+                  <OrderRow
+                    key={order.id}
+                    order={order}
+                    onCancel={handleCancelOrder}
+                  />
                 ))}
               </div>
             )}
@@ -693,15 +782,16 @@ function AccountPage() {
 
               {/* Trade Preview */}
               {tradeResult &&
-                (parseFloat(form.slPrice) > 0 || parseFloat(form.tpPrice)>0 || tradeResult.marginRequired) && (
+                (parseFloat(form.slPrice) > 0 ||
+                  parseFloat(form.tpPrice) > 0 ||
+                  tradeResult.marginRequired) && (
                   <div className="mb-5 rounded-2xl border border-white/10 bg-white/5 p-4 space-y-3">
                     <h3 className="text-sm font-semibold text-white">
                       Trade Preview
                     </h3>
 
-
                     <div className="rounded-xl bg-white/5 p-3 text-sm space-y-2">
-                       {tradeResult.marginRequired !== undefined && (
+                      {tradeResult.marginRequired !== undefined && (
                         <div className="flex justify-between">
                           <span className="text-zinc-400">Margin Required</span>
                           <span className="text-yellow-400 font-medium">
@@ -929,7 +1019,13 @@ function MarketRow({
   );
 }
 
-function OrderRow({ order }: { order: Order }) {
+function OrderRow({
+  order,
+  onCancel,
+}: {
+  order: Order;
+  onCancel: (id: string) => void;
+}) {
   return (
     <div className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 hover:bg-white/[0.07] transition">
       <div className="flex items-center justify-between">
@@ -972,30 +1068,35 @@ function OrderRow({ order }: { order: Order }) {
               dateStyle: "short",
             })}
           </p>
+          {order.status === "PENDING" && (
+            <button
+              onClick={() => onCancel(order.id)}
+              className="mt-2 px-3 py-1 text-xs rounded-lg bg-red-500/15 hover:bg-red-500 text-red-400 hover:text-white border border-red-500/20 transition"
+            >
+              Cancel
+            </button>
+          )}
         </div>
       </div>
     </div>
   );
 }
 
-// ===============================
-// 5) ADD THIS COMPONENT
-// Place BELOW OrderRow()
-// ===============================
-
 function PositionRow({
   position,
   marketPrice,
+  onClose,
 }: {
   position: Position;
   marketPrice: number;
+  onClose: (id: string) => void;
 }) {
-  const isLong = position.direction === "LONG";
-
-  const unrealized =
-    isLong
-      ? (marketPrice - position.avgEntryPrice) * position.quantity/1000
-      : (position.avgEntryPrice - marketPrice) * position.quantity/1000;
+  const livePositions: PositionStateItem[] = useSelector(
+    (state: RootState) => state.positions.positions,
+  );
+  const isLong = position.direction === "LONG" ? true : false;
+  const live = livePositions.find((p) => p.positionId === position.id);
+  const unrealized = live?.unrealizedPnl ?? 0;
 
   const pnlPositive = unrealized >= 0;
 
@@ -1069,20 +1170,26 @@ function PositionRow({
               pnlPositive ? "text-green-400" : "text-red-400"
             }`}
           >
-            
-            {pnlPositive ? "+" : ""}
-            ${unrealized.toLocaleString(undefined, {
+            {pnlPositive ? "+" : ""}$
+            {unrealized.toLocaleString(undefined, {
               maximumFractionDigits: 2,
             })}
           </p>
-
-          
 
           <p className="text-xs text-zinc-600 mt-0.5">
             {new Date(position.createdAt).toLocaleDateString("en-US", {
               dateStyle: "short",
             })}
           </p>
+
+          {position.isOpen && (
+            <button
+              onClick={() => onClose(position.id)}
+              className="mt-2 px-3 py-1 text-xs rounded-lg bg-orange-500/15 hover:bg-orange-500 text-orange-400 hover:text-black border border-orange-500/20 transition"
+            >
+              Close
+            </button>
+          )}
         </div>
       </div>
     </div>

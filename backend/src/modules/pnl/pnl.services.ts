@@ -1,12 +1,12 @@
 
 import { prisma } from "../../lib/prisma";
+import { getAccountPositions } from "../../utils/cache/positionCache";
 import { getLivePrice } from "../../utils/fetchPrices/price.utils";
 import { calcUnrealizedPnl } from "../../utils/pnl.utils";
 
 async function getUnrealisedPnlForAccount(accountId: string) {
-  const positions = await prisma.position.findMany({
-    where: { accountId, isOpen: true },
-  });
+  const positions =getAccountPositions(accountId);
+  
 
   if (positions.length === 0) return [];
 

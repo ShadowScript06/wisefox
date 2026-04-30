@@ -5,9 +5,9 @@ export function calcUnrealizedPnl(
     currentPrice:number
 ):number{
  if (position.direction === 'LONG') {
-    return (currentPrice - position.avgEntryPrice) * position.quantity
+    return (currentPrice - position.avgEntryPrice) * position.quantity/1000;
   }
-  return (position.avgEntryPrice - currentPrice) * position.quantity
+  return (position.avgEntryPrice - currentPrice) * position.quantity/1000;
 }
 
 export function calcPnlAndCharges(

@@ -2,6 +2,8 @@ import { prisma } from "../../lib/prisma"
 import { Position } from "../../generated/prisma/client"
 import auditServices from "../audit/audit.services"
 import { getLivePrice } from "../../utils/fetchPrices/price.utils"
+import { upsertAccount } from "../../utils/cache/accountCache"
+import { upsertPositionCache } from "../../utils/cache/positionCache"
 
 
 interface SetSLTPInput {
@@ -107,16 +109,19 @@ async function partialClose(
         tpHit: reason === 'TP' ? true : position.tpHit,
       },
     })
+
+    
   }
 
   // update account balance + release margin
-  await tx.account.update({
+  const  updatedAccount=await tx.account.update({
     where: { id: position.accountId },
     data: {
       balance: { increment: realizedPnl },
       marginUsed: { decrement: marginToRelease },
     },
   })
+  upsertAccount(updatedAccount);
 
   // create trade record for this close
   await tx.trade.create({
