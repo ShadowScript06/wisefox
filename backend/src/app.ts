@@ -7,9 +7,8 @@ import accountRouter from "./modules/account/account.routes";
 import orderRouter from "./modules/order/order.routes"
 import { authMiddleware } from "./middlewares/auth";
 import positionRouter from "./modules/position/position.routes"
-
-
 import sltpRoutes from './modules/sltp/sltp.routes'
+import alertRoutes from "./modules/alert/alert.routes"
 
 
 
@@ -30,10 +29,12 @@ app.use(express.json());
 
 app.use('/api/v1/auth',authRouter);
 app.use(authMiddleware);
+app.use('/api/v1/alerts',alertRoutes);
 app.use('/api/v1/accounts',accountRouter);
 app.use('/api/v1/accounts/:accountId/orders',orderRouter);
 app.use('/api/v1/accounts/:accountId/positions',positionRouter);
 app.use('/api/v1/accounts/:accountId/positions/:positionId/sltp', sltpRoutes)
+
 
 app.get("/health", async (req, res) => {
   res.send("API running");

@@ -9,6 +9,23 @@
 * 🟢 You can import this file directly.
 */
 
+export const AlertStatus = {
+  PENDING: 'PENDING',
+  TRIGGERED: 'TRIGGERED'
+} as const
+
+export type AlertStatus = (typeof AlertStatus)[keyof typeof AlertStatus]
+
+
+export const AlertType = {
+  LTE: 'LTE',
+  GTE: 'GTE',
+  ET: 'ET'
+} as const
+
+export type AlertType = (typeof AlertType)[keyof typeof AlertType]
+
+
 export const AuditType = {
   ORDER_PLACED: 'ORDER_PLACED',
   ORDER_FILLED: 'ORDER_FILLED',

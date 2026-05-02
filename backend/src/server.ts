@@ -11,22 +11,36 @@ import orderServices from "./modules/order/order.services";
 import { prisma } from "./lib/prisma";
 import pnlServices from "./modules/pnl/pnl.services";
 import liquidationService from "./modules/liquidation/liquidation.services";
-import sltpService from './modules/sltp/sltp.services'
-import redisClients from "./config/redis/redis";
-import pendingOrders, { refreshPendingOrdersCache } from "./utils/cache/orderCache";
+import sltpService from "./modules/sltp/sltp.services";
+import { refreshPendingOrdersCache } from "./utils/cache/orderCache";
 import { refreshPositionsCache } from "./utils/cache/positionCache";
 import { refreshAccountsCache } from "./utils/cache/accountCache";
+import { refreshAlertsCache } from "./utils/cache/alertCache";
+import alertServices from "./modules/alert/alerts.services";
+
+
 dotenv.config();
-
-
 
 const PORT = process.env.PORT || 5000;
 const server = http.createServer(app);
+
+const sendToUser = (userId: string, payload: any) => {
+  for (const client of wss.clients) {
+    if (client.readyState !== WebSocket.OPEN) continue;
+
+    if ((client as any).userId === userId) {
+      client.send(JSON.stringify(payload));
+    }
+  }
+};
 
 export let livePrices: Record<string, number> = {};
 
 const wss = new WebSocketServer({ server });
 
+/**
+ * 🔌 WebSocket Connection
+ */
 wss.on("connection", async (client, req) => {
   try {
     const cookies = cookie.parse(req.headers.cookie || "");
@@ -42,20 +56,17 @@ wss.on("connection", async (client, req) => {
       email: string;
     };
 
+    // 🔹 Try to get account (optional)
     const account = await prisma.account.findFirst({
       where: { userId: decoded.userId },
     });
 
-    if (!account) {
-      client.close();
-      return;
-    }
-
     (client as any).userId = decoded.userId;
-    (client as any).accountId = account.id;
+    (client as any).accountId = account?.id || null;
 
     console.log("User connected:", decoded.userId);
 
+    // 🔹 Send initial snapshot
     client.send(JSON.stringify({ type: "SNAPSHOT", data: livePrices }));
   } catch (err) {
     console.log("WS auth error:", err);
@@ -63,86 +74,129 @@ wss.on("connection", async (client, req) => {
   }
 });
 
+/**
+ * 🔁 MAIN LOOP (every 2s)
+ */
 setInterval(async () => {
-  // 1. generate new prices
-  livePrices = generateLivePrices(basePrices, livePrices);
+  try {
+    // 1. Generate new prices
+    livePrices = generateLivePrices(basePrices, livePrices);
 
-  // 2. per client loop
-  for (const client of wss.clients) {
-    if (client.readyState !== WebSocket.OPEN) continue;
+    // 2. Per-client updates
+    for (const client of wss.clients) {
+      if (client.readyState !== WebSocket.OPEN) continue;
 
-    const accountId = (client as any).accountId as string | undefined;
-    if (!accountId) continue;
+      const userId = (client as any).userId;
+      let accountId = (client as any).accountId;
 
-    // price tick
-    client.send(JSON.stringify({ type: "TICK", data: livePrices }));
+      // ✅ Always send price tick
+      client.send(JSON.stringify({ type: "TICK", data: livePrices }));
 
-    //unrealized PnL
-    const pnl = await pnlServices
-      .getUnrealisedPnlForAccount(accountId)
-      .catch(() => []);
+      // 🔄 If account was not present earlier, check again
+      if (!accountId && userId) {
+        const account = await prisma.account.findFirst({
+          where: { userId },
+        });
 
-    if (pnl.length > 0) {
-      client.send(JSON.stringify({ type: "PNL_UPDATE", data: pnl }));
+        if (account) {
+          (client as any).accountId = account.id;
+          accountId = account.id;
+
+          client.send(
+            JSON.stringify({
+              type: "ACCOUNT_CONNECTED",
+              message: "Trading account linked successfully",
+            })
+          );
+        }
+      }
+
+      // 🔐 Only run trading logic if account exists
+      if (accountId) {
+        // 📊 Unrealized PnL
+        const pnl = await pnlServices
+          .getUnrealisedPnlForAccount(accountId)
+          .catch(() => []);
+
+        if (pnl.length > 0) {
+          client.send(JSON.stringify({ type: "PNL_UPDATE", data: pnl }));
+        }
+
+        // ⚠️ Liquidation check
+        const { marginCall, liquidated } = await liquidationService
+          .checkAndLiquidate(accountId)
+          .catch(() => ({ marginCall: false, liquidated: false }));
+
+        if (marginCall) {
+          client.send(
+            JSON.stringify({
+              type: "MARGIN_CALL",
+              message:
+                "Warning: your margin level is below 100%. Add funds or close positions.",
+            })
+          );
+        }
+
+        if (liquidated) {
+          client.send(
+            JSON.stringify({
+              type: "LIQUIDATED",
+              message:
+                "Your positions have been liquidated due to insufficient margin.",
+            })
+          );
+        }
+      }
     }
 
-  //   // liquidation check
-    const { marginCall, liquidated } = await liquidationService
-      .checkAndLiquidate(accountId)
-      .catch(() => ({ marginCall: false, liquidated: false }));
+    // 🔥 GLOBAL ENGINE (RUN ONCE)
+    await orderServices.expireOrders().catch((err) =>
+      console.error("expireOrders error:", err.message)
+    );
 
-    if (marginCall) {
-      client.send(
-        JSON.stringify({
-          type: "MARGIN_CALL",
-          message:
-            "Warning: your margin level is below 100%. Add funds or close positions.",
-        })
-      );
-    }
+    await matchingServices.matchPendingOrders().catch((err) =>
+      console.error("matchPendingOrders error:", err.message)
+    );
 
-    if (liquidated) {
-      client.send(
-        JSON.stringify({
-          type: "LIQUIDATED",
-          message:
-            "Your positions have been liquidated due to insufficient margin.",
-        })
-      );
-    }
-  
+    await sltpService.checkSLTPForAllPositions().catch((err) =>
+      console.error("SLTP check error:", err.message)
+    );
 
- // 3. expire stale orders
-  await orderServices.expireOrders().catch((err) =>
-    console.error("expireOrders error:", err.message)
-  );
-
-  // 4. match pending orders
-  await matchingServices
-    .matchPendingOrders()
-    .catch((err) => console.error("matchPendingOrders error:", err.message));
-
-//  5. check sl tp
-    await sltpService
-  .checkSLTPForAllPositions()
-  .catch((err) => console.error('SLTP check error:', err.message))
+    await alertServices.checkTriggeredAlerts(sendToUser).catch((err) =>
+      console.error("Alert check error:", err.message)
+    );
+  } catch (err) {
+    console.error("Main loop error:", err);
   }
 }, 2000);
 
-
+/**
+ * 🔁 Cache refresh (1 hour)
+ */
 setInterval(async () => {
   await refreshPendingOrdersCache();
   await refreshAccountsCache();
   await refreshPositionsCache();
+  await refreshAlertsCache()
+}, 60 * 60 * 1000);
 
-}, 60 * 60 * 1000); // 1 hour
 
+
+
+
+
+/**
+ * 
+ * 
+ * Server start
+ */
 server.listen(PORT, async () => {
-
   getPrices();
-  // redisClients.connectRedis();
+
   await refreshPendingOrdersCache();
   await refreshAccountsCache();
   await refreshPositionsCache();
+  await refreshAlertsCache();
+
   console.log("Server running on port " + PORT);
 });

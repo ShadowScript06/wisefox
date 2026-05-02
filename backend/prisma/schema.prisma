@@ -21,6 +21,7 @@ model User{
   googleId String?
   createdAt DateTime @default(now())
   accounts Account[]
+  alerts Alert[]
 }
 
 model Account{
@@ -107,6 +108,30 @@ model AuditLog {
   message   String
   meta      Json?       // any extra data — prices, quantities etc
   createdAt DateTime    @default(now())
+}
+
+
+model Alert{
+  id String @id @default(uuid())
+  userId String
+  user User @relation(fields: [userId], references: [id], onDelete:Cascade)
+
+  name String
+  price Float
+  status AlertStatus
+  type AlertType
+  symbol String
+}
+
+enum AlertStatus{
+  PENDING
+  TRIGGERED
+}
+
+enum AlertType{
+  LTE
+  GTE
+  ET
 }
 
 enum AuditType {

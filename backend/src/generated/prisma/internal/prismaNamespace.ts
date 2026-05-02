@@ -389,7 +389,8 @@ export const ModelName = {
   Order: 'Order',
   Position: 'Position',
   Trade: 'Trade',
-  AuditLog: 'AuditLog'
+  AuditLog: 'AuditLog',
+  Alert: 'Alert'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -405,7 +406,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "account" | "order" | "position" | "trade" | "auditLog"
+    modelProps: "user" | "account" | "order" | "position" | "trade" | "auditLog" | "alert"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -853,6 +854,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    Alert: {
+      payload: Prisma.$AlertPayload<ExtArgs>
+      fields: Prisma.AlertFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.AlertFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AlertPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.AlertFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AlertPayload>
+        }
+        findFirst: {
+          args: Prisma.AlertFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AlertPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.AlertFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AlertPayload>
+        }
+        findMany: {
+          args: Prisma.AlertFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AlertPayload>[]
+        }
+        create: {
+          args: Prisma.AlertCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AlertPayload>
+        }
+        createMany: {
+          args: Prisma.AlertCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.AlertCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AlertPayload>[]
+        }
+        delete: {
+          args: Prisma.AlertDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AlertPayload>
+        }
+        update: {
+          args: Prisma.AlertUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AlertPayload>
+        }
+        deleteMany: {
+          args: Prisma.AlertDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.AlertUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.AlertUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AlertPayload>[]
+        }
+        upsert: {
+          args: Prisma.AlertUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AlertPayload>
+        }
+        aggregate: {
+          args: Prisma.AlertAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateAlert>
+        }
+        groupBy: {
+          args: Prisma.AlertGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AlertGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.AlertCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AlertCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -994,6 +1069,19 @@ export const AuditLogScalarFieldEnum = {
 } as const
 
 export type AuditLogScalarFieldEnum = (typeof AuditLogScalarFieldEnum)[keyof typeof AuditLogScalarFieldEnum]
+
+
+export const AlertScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  name: 'name',
+  price: 'price',
+  status: 'status',
+  type: 'type',
+  symbol: 'symbol'
+} as const
+
+export type AlertScalarFieldEnum = (typeof AlertScalarFieldEnum)[keyof typeof AlertScalarFieldEnum]
 
 
 export const SortOrder = {
@@ -1175,6 +1263,34 @@ export type JsonFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'J
 export type EnumQueryModeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'QueryMode'>
     
 
+
+/**
+ * Reference to a field of type 'AlertStatus'
+ */
+export type EnumAlertStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AlertStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'AlertStatus[]'
+ */
+export type ListEnumAlertStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AlertStatus[]'>
+    
+
+
+/**
+ * Reference to a field of type 'AlertType'
+ */
+export type EnumAlertTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AlertType'>
+    
+
+
+/**
+ * Reference to a field of type 'AlertType[]'
+ */
+export type ListEnumAlertTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AlertType[]'>
+    
+
 /**
  * Batch Payload for updateMany & deleteMany & createMany
  */
@@ -1291,6 +1407,7 @@ export type GlobalOmitConfig = {
   position?: Prisma.PositionOmit
   trade?: Prisma.TradeOmit
   auditLog?: Prisma.AuditLogOmit
+  alert?: Prisma.AlertOmit
 }
 
 /* Types for Logging */

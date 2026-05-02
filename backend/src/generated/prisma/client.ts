@@ -69,3 +69,8 @@ export type Trade = Prisma.TradeModel
  * 
  */
 export type AuditLog = Prisma.AuditLogModel
+/**
+ * Model Alert
+ * 
+ */
+export type Alert = Prisma.AlertModel

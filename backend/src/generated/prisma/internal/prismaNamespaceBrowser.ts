@@ -56,7 +56,8 @@ export const ModelName = {
   Order: 'Order',
   Position: 'Position',
   Trade: 'Trade',
-  AuditLog: 'AuditLog'
+  AuditLog: 'AuditLog',
+  Alert: 'Alert'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -177,6 +178,19 @@ export const AuditLogScalarFieldEnum = {
 } as const
 
 export type AuditLogScalarFieldEnum = (typeof AuditLogScalarFieldEnum)[keyof typeof AuditLogScalarFieldEnum]
+
+
+export const AlertScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  name: 'name',
+  price: 'price',
+  status: 'status',
+  type: 'type',
+  symbol: 'symbol'
+} as const
+
+export type AlertScalarFieldEnum = (typeof AlertScalarFieldEnum)[keyof typeof AlertScalarFieldEnum]
 
 
 export const SortOrder = {

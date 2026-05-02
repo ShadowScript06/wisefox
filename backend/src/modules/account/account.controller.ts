@@ -31,7 +31,7 @@ async function getAllAccounts(request:Request,response:Response):Promise<void>{
     const accounts=await accountServices.getAllAccounts(userId);
 
     if(accounts.length<=0){
-         response.status(404).json({
+         response.status(200).json({
             success:false,
             message:"No Account Found."
          })

@@ -1,5 +1,9 @@
 import { prisma } from "../../lib/prisma";
 import { removeAccount, upsertAccount } from "../../utils/cache/accountCache";
+import { AlertStatus } from "../../generated/prisma/client";
+import { getAllAlerts, removeAlert, upsertAlert } from "../../utils/cache/alertCache";
+import { getLivePrice } from "../../utils/fetchPrices/price.utils";
+
 
 const createAccount=async(name:string,balance:number,userId:string)=>{
     const account=await prisma.account.create({
@@ -52,11 +56,18 @@ const deleteAccount=async(userId:string,accountId:string)=>{
     return account;
 }
 
+
+
+
+
+
+
 const accountServices={
     createAccount,
     getAllAccounts,
     getAccountById,
-    deleteAccount
+    deleteAccount,
+   
 }
 
 

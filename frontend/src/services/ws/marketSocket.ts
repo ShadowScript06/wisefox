@@ -1,4 +1,7 @@
+
+import { addAlert } from "../../redux/alertSlice";
 import { updatePrices } from "../../redux/marketPriceSlice";
+import { add } from "../../redux/notificationSlice";
 import { setPositions } from "../../redux/positionsSlice";
 import type { AppDispatch } from "../../redux/store";
 
@@ -25,17 +28,19 @@ export function openWS(dispatch: AppDispatch) {
           dispatch(setPositions(msg.data));
           break;
 
-        case "LIQUIDATED":{
-          const date = new Date();
-          console.log(date.toLocaleTimeString());
-          console.log(msg);
+        case "LIQUIDATED": {
+          dispatch(add(msg));
           break;
         }
 
         case "MARGIN_CALL": {
-          const date = new Date();
-          console.log(date.toLocaleTimeString());
-          console.log(msg);
+          dispatch(add(msg));
+          break;
+        }
+
+        case "ALERT_TRIGGERED": {
+          dispatch(add(msg));
+          dispatch(addAlert(msg.data.id))
           break;
         }
         default:

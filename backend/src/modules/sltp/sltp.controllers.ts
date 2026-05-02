@@ -6,7 +6,7 @@ sltpService
  async function setSltp(request: Request, response: Response,) {
   try {
     const { positionId ,accountId} = request.params as any
-    const { slPrice, slQty, tpPrice, tpQty } = request.body
+    const { slPrice,  tpPrice  } = request.body
    
 
     await sltpService.setSLTP({ positionId, accountId, slPrice,  tpPrice, })
