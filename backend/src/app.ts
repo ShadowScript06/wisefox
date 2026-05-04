@@ -10,7 +10,7 @@ import positionRouter from "./modules/position/position.routes"
 import sltpRoutes from './modules/sltp/sltp.routes'
 import alertRoutes from "./modules/alert/alert.routes"
 import journalRouter from "./modules/journal/journal.routes"
-
+import subscriptionRouter from "./modules/subscription/subsdriptions.routes"
 
 
 
@@ -36,6 +36,7 @@ app.use('/api/v1/accounts/:accountId/orders',orderRouter);
 app.use('/api/v1/accounts/:accountId/journals',journalRouter);
 app.use('/api/v1/accounts/:accountId/positions',positionRouter);
 app.use('/api/v1/accounts/:accountId/positions/:positionId/sltp', sltpRoutes)
+app.use('/api/v1/sunscriptions',subscriptionRouter);
 
 
 app.get("/health", async (req, res) => {

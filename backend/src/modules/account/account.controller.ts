@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import accountServices from "./account.services";
 import { success } from "zod";
+import { incrementUsage } from "../../middlewares/incrementUsage";
 
 async function createAccount(
   request: Request,
@@ -11,6 +12,8 @@ async function createAccount(
     const userId = (request.user as any).id;
 
     const account = await accountServices.createAccount(name, balance, userId);
+
+    await incrementUsage(userId,"ACCOUNT");
 
     response.status(201).json({
       success: true,

@@ -89,3 +89,18 @@ export type Note = Prisma.NoteModel
  * 
  */
 export type AiFeedback = Prisma.AiFeedbackModel
+/**
+ * Model Plan
+ * 
+ */
+export type Plan = Prisma.PlanModel
+/**
+ * Model Subscription
+ * 
+ */
+export type Subscription = Prisma.SubscriptionModel
+/**
+ * Model DailyUsage
+ * 
+ */
+export type DailyUsage = Prisma.DailyUsageModel

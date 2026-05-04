@@ -1,6 +1,7 @@
 import redisClients from "../../config/redis/redis";
 import { Order, Position } from "../../generated/prisma/client";
 import { prisma } from "../../lib/prisma";
+import { incrementUsage } from "../../middlewares/incrementUsage";
 import { upsertAccount } from "../../utils/cache/accountCache";
 import pendingOrders from "../../utils/cache/orderCache";
 import { getLivePrice } from "../../utils/fetchPrices/price.utils";
@@ -59,9 +60,9 @@ async function matchOrder(orderId: string): Promise<void> {
   await prisma.$transaction(async (tx) => {
     // 1. fetch account with row-level lock (prevents race conditions)
     const account = await tx.$queryRaw<
-      { id: string; balance: number; marginUsed: number }[]
+      { id: string; balance: number; marginUsed: number,userId:string }[]
     >`
-    SELECT id, balance, "marginUsed"
+    SELECT id, balance, "marginUsed",userId
     FROM "Account"
     WHERE id = ${order.accountId}
     FOR UPDATE
@@ -117,6 +118,8 @@ async function matchOrder(orderId: string): Promise<void> {
       },
     });
 
+
+
     // 4. mark order filled
     await tx.order.update({
       where: { id: order.id },
@@ -156,6 +159,10 @@ async function matchOrder(orderId: string): Promise<void> {
       tx,
     );
 
+    
+
+    await incrementUsage(account[0].userId,"TRADE");
+    
     if (order.isBracket && (order.slPrice || order.tpPrice)) {
       const position = await tx.position.findFirst({
         where: {

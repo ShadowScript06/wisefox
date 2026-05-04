@@ -7,6 +7,9 @@ declare global {
         id: string;
         email:string
       };
+      planLimit:number
+
+      
     }
   }
 }

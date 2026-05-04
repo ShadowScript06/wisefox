@@ -60,7 +60,10 @@ export const ModelName = {
   Alert: 'Alert',
   Journal: 'Journal',
   Note: 'Note',
-  AiFeedback: 'AiFeedback'
+  AiFeedback: 'AiFeedback',
+  Plan: 'Plan',
+  Subscription: 'Subscription',
+  DailyUsage: 'DailyUsage'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -237,6 +240,50 @@ export const AiFeedbackScalarFieldEnum = {
 } as const
 
 export type AiFeedbackScalarFieldEnum = (typeof AiFeedbackScalarFieldEnum)[keyof typeof AiFeedbackScalarFieldEnum]
+
+
+export const PlanScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  price: 'price',
+  tradesPerDay: 'tradesPerDay',
+  maxAccounts: 'maxAccounts',
+  journalsPerDay: 'journalsPerDay',
+  initialBalanceType: 'initialBalanceType',
+  initialBalance: 'initialBalance',
+  aiFeedbackEnabled: 'aiFeedbackEnabled',
+  aiSummaryEnabled: 'aiSummaryEnabled',
+  createdAt: 'createdAt'
+} as const
+
+export type PlanScalarFieldEnum = (typeof PlanScalarFieldEnum)[keyof typeof PlanScalarFieldEnum]
+
+
+export const SubscriptionScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  planId: 'planId',
+  status: 'status',
+  razorpayOrderId: 'razorpayOrderId',
+  razorpayPaymentId: 'razorpayPaymentId',
+  startDate: 'startDate',
+  endDate: 'endDate',
+  createdAt: 'createdAt'
+} as const
+
+export type SubscriptionScalarFieldEnum = (typeof SubscriptionScalarFieldEnum)[keyof typeof SubscriptionScalarFieldEnum]
+
+
+export const DailyUsageScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  date: 'date',
+  tradesCount: 'tradesCount',
+  journalsCount: 'journalsCount',
+  createdAt: 'createdAt'
+} as const
+
+export type DailyUsageScalarFieldEnum = (typeof DailyUsageScalarFieldEnum)[keyof typeof DailyUsageScalarFieldEnum]
 
 
 export const SortOrder = {

@@ -3,6 +3,8 @@ import { removeAccount, upsertAccount } from "../../utils/cache/accountCache";
 
 
 import axios from "axios";
+import subscritionServices from "../subscription/subscriptions.services";
+import { response } from "express";
 
 const client = axios.create({
   baseURL: "https://openrouter.ai/api/v1",
@@ -36,6 +38,18 @@ type AccountOverviewResponse = {
 }
 
 const createAccount = async (name: string, balance: number, userId: string) => {
+  const accountCount = await prisma.account.count({
+  where: { userId },
+});
+
+const plan= await subscritionServices.getActivePlan(userId);
+
+
+if (accountCount >= plan.maxAccounts) {
+  return response.status(403).json({
+    message: "Account limit reached",
+  });
+}
   const account = await prisma.account.create({
     data: {
       name,
@@ -45,6 +59,8 @@ const createAccount = async (name: string, balance: number, userId: string) => {
   });
 
   upsertAccount(account);
+
+  
 
   return account;
 };

@@ -2,11 +2,12 @@ import express from "express";
 import journalController from "./journal.controllers"
 import { validate } from "../../middlewares/inputvalidator";
 import { createJournalSchema } from "../../config/validations/journal/createJournal";
+import { checkPlanLimit } from "../../middlewares/checkPlanLimit";
 
 const router = express.Router({ mergeParams: true });
 
 // JOURNAL CRUD
-router.post("/",validate(createJournalSchema), journalController.createJournal);
+router.post("/",checkPlanLimit("JOURNAL"),validate(createJournalSchema), journalController.createJournal);
 
 router.get("/", journalController.getJournals);
 

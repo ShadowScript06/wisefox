@@ -393,7 +393,10 @@ export const ModelName = {
   Alert: 'Alert',
   Journal: 'Journal',
   Note: 'Note',
-  AiFeedback: 'AiFeedback'
+  AiFeedback: 'AiFeedback',
+  Plan: 'Plan',
+  Subscription: 'Subscription',
+  DailyUsage: 'DailyUsage'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -409,7 +412,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "account" | "order" | "position" | "trade" | "auditLog" | "alert" | "journal" | "note" | "aiFeedback"
+    modelProps: "user" | "account" | "order" | "position" | "trade" | "auditLog" | "alert" | "journal" | "note" | "aiFeedback" | "plan" | "subscription" | "dailyUsage"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1153,6 +1156,228 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    Plan: {
+      payload: Prisma.$PlanPayload<ExtArgs>
+      fields: Prisma.PlanFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.PlanFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PlanPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.PlanFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PlanPayload>
+        }
+        findFirst: {
+          args: Prisma.PlanFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PlanPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.PlanFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PlanPayload>
+        }
+        findMany: {
+          args: Prisma.PlanFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PlanPayload>[]
+        }
+        create: {
+          args: Prisma.PlanCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PlanPayload>
+        }
+        createMany: {
+          args: Prisma.PlanCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.PlanCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PlanPayload>[]
+        }
+        delete: {
+          args: Prisma.PlanDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PlanPayload>
+        }
+        update: {
+          args: Prisma.PlanUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PlanPayload>
+        }
+        deleteMany: {
+          args: Prisma.PlanDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.PlanUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.PlanUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PlanPayload>[]
+        }
+        upsert: {
+          args: Prisma.PlanUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PlanPayload>
+        }
+        aggregate: {
+          args: Prisma.PlanAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregatePlan>
+        }
+        groupBy: {
+          args: Prisma.PlanGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.PlanGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.PlanCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.PlanCountAggregateOutputType> | number
+        }
+      }
+    }
+    Subscription: {
+      payload: Prisma.$SubscriptionPayload<ExtArgs>
+      fields: Prisma.SubscriptionFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.SubscriptionFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SubscriptionPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.SubscriptionFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SubscriptionPayload>
+        }
+        findFirst: {
+          args: Prisma.SubscriptionFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SubscriptionPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.SubscriptionFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SubscriptionPayload>
+        }
+        findMany: {
+          args: Prisma.SubscriptionFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SubscriptionPayload>[]
+        }
+        create: {
+          args: Prisma.SubscriptionCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SubscriptionPayload>
+        }
+        createMany: {
+          args: Prisma.SubscriptionCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.SubscriptionCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SubscriptionPayload>[]
+        }
+        delete: {
+          args: Prisma.SubscriptionDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SubscriptionPayload>
+        }
+        update: {
+          args: Prisma.SubscriptionUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SubscriptionPayload>
+        }
+        deleteMany: {
+          args: Prisma.SubscriptionDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.SubscriptionUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.SubscriptionUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SubscriptionPayload>[]
+        }
+        upsert: {
+          args: Prisma.SubscriptionUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SubscriptionPayload>
+        }
+        aggregate: {
+          args: Prisma.SubscriptionAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateSubscription>
+        }
+        groupBy: {
+          args: Prisma.SubscriptionGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.SubscriptionGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.SubscriptionCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.SubscriptionCountAggregateOutputType> | number
+        }
+      }
+    }
+    DailyUsage: {
+      payload: Prisma.$DailyUsagePayload<ExtArgs>
+      fields: Prisma.DailyUsageFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.DailyUsageFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DailyUsagePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.DailyUsageFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DailyUsagePayload>
+        }
+        findFirst: {
+          args: Prisma.DailyUsageFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DailyUsagePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.DailyUsageFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DailyUsagePayload>
+        }
+        findMany: {
+          args: Prisma.DailyUsageFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DailyUsagePayload>[]
+        }
+        create: {
+          args: Prisma.DailyUsageCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DailyUsagePayload>
+        }
+        createMany: {
+          args: Prisma.DailyUsageCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.DailyUsageCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DailyUsagePayload>[]
+        }
+        delete: {
+          args: Prisma.DailyUsageDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DailyUsagePayload>
+        }
+        update: {
+          args: Prisma.DailyUsageUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DailyUsagePayload>
+        }
+        deleteMany: {
+          args: Prisma.DailyUsageDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.DailyUsageUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.DailyUsageUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DailyUsagePayload>[]
+        }
+        upsert: {
+          args: Prisma.DailyUsageUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DailyUsagePayload>
+        }
+        aggregate: {
+          args: Prisma.DailyUsageAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateDailyUsage>
+        }
+        groupBy: {
+          args: Prisma.DailyUsageGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.DailyUsageGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.DailyUsageCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.DailyUsageCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -1350,6 +1575,50 @@ export const AiFeedbackScalarFieldEnum = {
 } as const
 
 export type AiFeedbackScalarFieldEnum = (typeof AiFeedbackScalarFieldEnum)[keyof typeof AiFeedbackScalarFieldEnum]
+
+
+export const PlanScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  price: 'price',
+  tradesPerDay: 'tradesPerDay',
+  maxAccounts: 'maxAccounts',
+  journalsPerDay: 'journalsPerDay',
+  initialBalanceType: 'initialBalanceType',
+  initialBalance: 'initialBalance',
+  aiFeedbackEnabled: 'aiFeedbackEnabled',
+  aiSummaryEnabled: 'aiSummaryEnabled',
+  createdAt: 'createdAt'
+} as const
+
+export type PlanScalarFieldEnum = (typeof PlanScalarFieldEnum)[keyof typeof PlanScalarFieldEnum]
+
+
+export const SubscriptionScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  planId: 'planId',
+  status: 'status',
+  razorpayOrderId: 'razorpayOrderId',
+  razorpayPaymentId: 'razorpayPaymentId',
+  startDate: 'startDate',
+  endDate: 'endDate',
+  createdAt: 'createdAt'
+} as const
+
+export type SubscriptionScalarFieldEnum = (typeof SubscriptionScalarFieldEnum)[keyof typeof SubscriptionScalarFieldEnum]
+
+
+export const DailyUsageScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  date: 'date',
+  tradesCount: 'tradesCount',
+  journalsCount: 'journalsCount',
+  createdAt: 'createdAt'
+} as const
+
+export type DailyUsageScalarFieldEnum = (typeof DailyUsageScalarFieldEnum)[keyof typeof DailyUsageScalarFieldEnum]
 
 
 export const SortOrder = {
@@ -1686,6 +1955,9 @@ export type GlobalOmitConfig = {
   journal?: Prisma.JournalOmit
   note?: Prisma.NoteOmit
   aiFeedback?: Prisma.AiFeedbackOmit
+  plan?: Prisma.PlanOmit
+  subscription?: Prisma.SubscriptionOmit
+  dailyUsage?: Prisma.DailyUsageOmit
 }
 
 /* Types for Logging */

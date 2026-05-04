@@ -1,16 +1,30 @@
 import { Request, Response } from "express";
 import journalServices from 
 "./journal.services";
+import { incrementUsage } from "../../middlewares/incrementUsage";
+import { prisma } from "../../lib/prisma";
 
 // CREATE JOURNAL
 async function createJournal(request: Request, response: Response) {
   try {
     const { accountId } = request.params as any;
 
+
+    const account=await prisma.account.findUnique({
+      where:{
+        id:accountId
+      }
+    });
+
+    const userId=account?.userId;
+
     const journal = await journalServices.createJournal({
       ...request.body,
       accountId,
     });
+
+    if(userId)
+    await incrementUsage(userId,"JOURNAL");
 
     response.status(201).json({
       success: true,

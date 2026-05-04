@@ -1,29 +1,53 @@
-import { success } from "zod";
+
 import { prisma } from "../../lib/prisma";
 import bcrypt from "bcrypt";
 prisma;
+
+
+
+
+
+
+
 async function googleCallback(email: string, name: string, googleId: string) {
-  let user = await prisma.user.findUnique({
-    where: { email },
+  const user = await prisma.$transaction(async (tx) => {
+    let existing = await tx.user.findUnique({
+      where: { email },
+    });
+
+    if (!existing) {
+      existing = await tx.user.create({
+        data: {
+          email,
+          name,
+          googleId,
+          provider: "GOOGLE",
+        },
+      });
+
+      const plan = await tx.plan.findFirst({
+        where: { name: "BASIC" },
+      });
+
+      if (!plan) {
+        throw new Error("Plan not found");
+      }
+
+      await tx.subscription.create({
+        data: {
+          userId: existing.id,
+          planId: plan.id,
+          status: "ACTIVE",
+          startDate: new Date(),
+          endDate: new Date("2099-12-31"),
+        },
+      });
+    }
+
+    return existing;
   });
 
-  if (!user) {
-    user = await prisma.user.create({
-      data: {
-        email,
-        name,
-        googleId,
-        provider: "GOOGLE",
-      },
-    });
-  } else if (!user.googleId) {
-    user = await prisma.user.update({
-      where: { email },
-      data: { googleId, provider: "GOOGLE" },
-    });
-  }
-
-  return user;
+  return user; // ✅ REQUIRED
 }
 
 
@@ -40,37 +64,61 @@ type EmailSignUpResult =
         email: string;
       };
     };
-async function emailSignup(
+
+
+
+
+export async function emailSignup(
   email: string,
   name: string,
   password: string
-):Promise<EmailSignUpResult> {
+): Promise<EmailSignUpResult> {
   try {
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    const newUser = await prisma.user.create({
-      data: {
-        email,
-        name,
-        password: hashedPassword,
-        provider: "EMAIL",
-      },
-      select: {
-        id: true,
-        name: true,
-        email: true,
-      },
+    const result = await prisma.$transaction(async (tx) => {
+      // 1. create user
+      const user = await tx.user.create({
+        data: {
+          email,
+          name,
+          password: hashedPassword,
+          provider: "EMAIL",
+        },
+        select: {
+          id: true,
+          name: true,
+          email: true,
+        },
+      });
+
+      // 2. fetch BASIC plan
+      const plan = await tx.plan.findFirst({
+        where: { name: "BASIC" },
+      });
+
+      if (!plan) {
+        throw new Error("BASIC plan not found");
+      }
+
+      // 3. create subscription
+      await tx.subscription.create({
+        data: {
+          userId: user.id,
+          planId: plan.id,
+          status: "ACTIVE",
+          startDate: new Date(),
+          endDate: new Date("2099-12-31"),
+        },
+      });
+
+      return user;
     });
 
     return {
       success: true,
-      user:{
-        name:newUser.name,
-        email:newUser.email,
-        id:newUser.id
-      }
+      user: result,
     };
-
   } catch (error: any) {
     if (error.code === "P2002") {
       return {

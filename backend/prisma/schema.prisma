@@ -12,138 +12,137 @@ datasource db {
   provider = "postgresql"
 }
 
-model User{
-  id String @id @default(uuid())
-  email String @unique
-  password String?
-  name String
-  provider String
-  googleId String?
-  createdAt DateTime @default(now())
-  accounts Account[]
-  alerts Alert[]
+model User {
+  id           String         @id @default(uuid())
+  email        String         @unique
+  password     String?
+  name         String
+  provider     String
+  googleId     String?
+  createdAt    DateTime       @default(now())
+  accounts     Account[]
+  alerts       Alert[]
+  subscription Subscription[]
 }
 
-model Account{
-  id String @id @default(uuid())
-  name String
-  balance Float
-  userId String
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-  createdAt DateTime @default(now())
-  orders Order[]
-  positions Position[]
-  marginUsed Float @default(0)
-  auditLogs AuditLog[]
-  netPnl Float? @default(0)
-  charges Float? @default(0)
-  journals  Journal[]
-  feedback AiFeedback[]
+model Account {
+  id         String       @id @default(uuid())
+  name       String
+  balance    Float
+  userId     String
+  user       User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt  DateTime     @default(now())
+  orders     Order[]
+  positions  Position[]
+  marginUsed Float        @default(0)
+  auditLogs  AuditLog[]
+  netPnl     Float?       @default(0)
+  charges    Float?       @default(0)
+  journals   Journal[]
+  feedback   AiFeedback[]
 }
 
-model Order{
-  id String @id @default(uuid())
-  accountId String
-  account Account @relation(fields: [accountId], references: [id], onDelete: Cascade)
-  symbol String
-  direction Direction
-  status OrderStatus @default(PENDING)
-  quantity Int
-  type orderType
-  price Float
-  filledQty Int @default(0)
+model Order {
+  id          String      @id @default(uuid())
+  accountId   String
+  account     Account     @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  symbol      String
+  direction   Direction
+  status      OrderStatus @default(PENDING)
+  quantity    Int
+  type        orderType
+  price       Float
+  filledQty   Int         @default(0)
   filledPrice Float?
-  expiresAt DateTime?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  expiresAt   DateTime?
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
   cancelledAt DateTime?
-  trades Trade[]
-  leverage Int @default(1)
-   slPrice     Float?    // for bracket orders
+  trades      Trade[]
+  leverage    Int         @default(1)
+  slPrice     Float? // for bracket orders
   slQty       Float?
   tpPrice     Float?
   tpQty       Float?
-  isBracket   Boolean   @default(false)
- 
+  isBracket   Boolean     @default(false)
 }
 
-
-model Position{
-  id String @id @default(uuid())
-  accountId String
-  account Account @relation(fields: [accountId], references: [id], onDelete:Cascade)
-  symbol String
-  direction Direction
-  quantity Int
+model Position {
+  id            String    @id @default(uuid())
+  accountId     String
+  account       Account   @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  symbol        String
+  direction     Direction
+  quantity      Int
   avgEntryPrice Float
-  realizedPnl Float @default(0)
-  isOpen Boolean @default(true)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  leverage Int @default(1)
-  marginUsed Float @default(0)
-  slPrice     Float?    // stop loss price
-  tpPrice     Float?    // take profit price
-  slHit       Boolean   @default(false)  // already triggered?
-  tpHit       Boolean   @default(false)
-   closedAt DateTime?
+  realizedPnl   Float     @default(0)
+  isOpen        Boolean   @default(true)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  leverage      Int       @default(1)
+  marginUsed    Float     @default(0)
+  slPrice       Float? // stop loss price
+  tpPrice       Float? // take profit price
+  slHit         Boolean   @default(false) // already triggered?
+  tpHit         Boolean   @default(false)
+  closedAt      DateTime?
 }
-model Trade{
-  id String @id @default(uuid())
-  orderId String?
-  order Order? @relation(fields: [orderId], references: [id] , onDelete: Cascade)
-  accountId String
-  symbol String
-  direction Direction
-  quantity Int
-  price Float
-  realizedPnl Float @default(0)
-  createdAt DateTime @default(now())
-  trigger   String?   
-  charges  Float?
 
+model Trade {
+  id          String    @id @default(uuid())
+  orderId     String?
+  order       Order?    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  accountId   String
+  symbol      String
+  direction   Direction
+  quantity    Int
+  price       Float
+  realizedPnl Float     @default(0)
+  createdAt   DateTime  @default(now())
+  trigger     String?
+  charges     Float?
 }
 
 model AuditLog {
-  id        String      @id @default(uuid())
+  id        String    @id @default(uuid())
   accountId String
-  account   Account     @relation(fields: [accountId], references: [id],onDelete: Cascade)
+  account   Account   @relation(fields: [accountId], references: [id], onDelete: Cascade)
   type      AuditType
   message   String
-  meta      Json?       // any extra data — prices, quantities etc
-  createdAt DateTime    @default(now())
+  meta      Json? // any extra data — prices, quantities etc
+  createdAt DateTime  @default(now())
 }
 
-
-model Alert{
-  id String @id @default(uuid())
+model Alert {
+  id     String @id @default(uuid())
   userId String
-  user User @relation(fields: [userId], references: [id], onDelete:Cascade)
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  name String
-  price Float
+  name   String
+  price  Float
   status AlertStatus
-  type AlertType
+  type   AlertType
   symbol String
 }
-model Journal {
-  id         String   @id @default(cuid())
 
-  accountId  String
-  account    Account  @relation(fields: [accountId], references: [id])
+model Journal {
+  id String @id @default(cuid())
+
+  accountId String
+  account   Account @relation(fields: [accountId], references: [id],onDelete: Cascade)
 
   script String
-  date       DateTime
+  date   DateTime
 
-  entryTime  DateTime
-  exitTime   DateTime?
+  entryTime DateTime
+  exitTime  DateTime?
 
-  pnl        Float?
+  pnl Float?
 
   entryReason String
   exitReason  String?
 
-  notes      Note[]
+  notes Note[]
 
   quantity Int
 
@@ -151,42 +150,43 @@ model Journal {
 }
 
 model Note {
-  id         String   @id @default(cuid())
+  id String @id @default(cuid())
 
-  journalId  String
-  journal    Journal  @relation(fields: [journalId], references: [id])
+  journalId String
+  journal   Journal @relation(fields: [journalId], references: [id],onDelete: Cascade)
 
-  content    String
+  content String
 
-  createdAt  DateTime @default(now())
+  createdAt DateTime @default(now())
 }
 
 model AiFeedback {
-  id            String   @id @default(cuid())
+  id String @id @default(cuid())
 
-  accountId     String
-  account       Account  @relation(fields: [accountId], references: [id])
+  accountId String
+  account   Account @relation(fields: [accountId], references: [id], onDelete: Cascade)
 
-  content       Json     // ✅ structured AI output (IMPORTANT CHANGE)
+  content Json // ✅ structured AI output (IMPORTANT CHANGE)
 
-  summary       String?
+  summary String?
 
-  biggestWin    Float?
-  biggestLoss   Float?
+  biggestWin  Float?
+  biggestLoss Float?
 
   totalJournals Int
 
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@index([accountId])
 }
-enum AlertStatus{
+
+enum AlertStatus {
   PENDING
   TRIGGERED
 }
 
-enum AlertType{
+enum AlertType {
   LTE
   GTE
   ET
@@ -204,16 +204,70 @@ enum AuditType {
   LIQUIDATION
 }
 
-enum Direction{
+model Plan {
+  id   String @id @default(cuid())
+  name String // BASIC | PRO | PREMIUM
+
+  price Int // in INR or USD
+
+  tradesPerDay   Int
+  maxAccounts    Int // 1, 3, -1 (unlimited)
+  journalsPerDay Int // 1, 3, -1
+
+  initialBalanceType String // FIXED | MULTIPLIER | UNLIMITED
+  initialBalance     Int? // 1000, 10000, null
+
+  aiFeedbackEnabled Boolean
+  aiSummaryEnabled  Boolean
+
+  subscriptions Subscription[]
+
+  createdAt DateTime @default(now())
+}
+
+model Subscription {
+  id String @id @default(cuid())
+
+  userId String
+  planId String
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  plan Plan @relation(fields: [planId], references: [id],onDelete: Cascade)
+
+  status String // ACTIVE, EXPIRED, CANCELLED
+
+  razorpayOrderId   String?
+  razorpayPaymentId String?
+
+  startDate DateTime
+  endDate   DateTime
+
+  createdAt DateTime @default(now())
+}
+
+model DailyUsage {
+  id String @id @default(cuid())
+
+  userId String
+  date   DateTime
+
+  tradesCount   Int @default(0)
+  journalsCount Int @default(0)
+
+  createdAt DateTime @default(now())
+}
+
+enum Direction {
   LONG
   SHORT
 }
 
-enum orderType{
+enum orderType {
   MARKET
   LIMIT
 }
-enum OrderStatus{
+
+enum OrderStatus {
   PENDING
   FILLED
   PARTIALLY_FILLED
