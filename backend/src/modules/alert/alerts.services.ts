@@ -148,7 +148,6 @@ const checkTriggeredAlerts = async (
 
     const currentPrice = getLivePrice(alert.symbol);
 
-    console.log(currentPrice);
     if (!currentPrice) continue;
 
     let isTriggered = false;

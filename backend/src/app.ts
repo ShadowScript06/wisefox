@@ -9,6 +9,7 @@ import { authMiddleware } from "./middlewares/auth";
 import positionRouter from "./modules/position/position.routes"
 import sltpRoutes from './modules/sltp/sltp.routes'
 import alertRoutes from "./modules/alert/alert.routes"
+import journalRouter from "./modules/journal/journal.routes"
 
 
 
@@ -32,6 +33,7 @@ app.use(authMiddleware);
 app.use('/api/v1/alerts',alertRoutes);
 app.use('/api/v1/accounts',accountRouter);
 app.use('/api/v1/accounts/:accountId/orders',orderRouter);
+app.use('/api/v1/accounts/:accountId/journals',journalRouter);
 app.use('/api/v1/accounts/:accountId/positions',positionRouter);
 app.use('/api/v1/accounts/:accountId/positions/:positionId/sltp', sltpRoutes)
 

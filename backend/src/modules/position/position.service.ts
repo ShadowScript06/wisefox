@@ -231,6 +231,7 @@ async function processTradeIntoPosition(
         charges: {
           increment: result.charges,
         },
+        
       },
     });
 
@@ -243,6 +244,7 @@ async function processTradeIntoPosition(
         realizedPnl: { increment: result.realizedPnl },
         isOpen: false,
         marginUsed: 0,
+         closedAt:new Date()
       },
     });
 
@@ -290,6 +292,7 @@ async function processTradeIntoPosition(
         isOpen: false,
         marginUsed: 0,
         realizedPnl: { increment: closeResult.realizedPnl },
+         closedAt:new Date()
       },
     });
 
@@ -344,20 +347,36 @@ const getPositions = async (accountId: string) => {
   return positions;
 };
 
-const getTradeHistory = async (accountId: string) => {
-  const trades = await prisma.trade.findMany({
-    where: { accountId },
+const getTradeHistory = async (
+  accountId: string,
+  skip: number,
+  take: number
+) => {
+  return prisma.trade.findMany({
+    where: {
+      accountId,
+    },
     orderBy: {
       createdAt: "desc",
     },
+    skip,
+    take,
   });
-
-  return trades;
 };
+
+const countTrades = async (accountId: string) => {
+  return prisma.trade.count({
+    where: {
+      accountId,
+    },
+  });
+};
+
 const positionServices = {
   processTradeIntoPosition,
   getPositions,
   getTradeHistory,
+  countTrades
 };
 
 export default positionServices;

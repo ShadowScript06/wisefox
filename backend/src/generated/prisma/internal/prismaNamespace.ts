@@ -390,7 +390,10 @@ export const ModelName = {
   Position: 'Position',
   Trade: 'Trade',
   AuditLog: 'AuditLog',
-  Alert: 'Alert'
+  Alert: 'Alert',
+  Journal: 'Journal',
+  Note: 'Note',
+  AiFeedback: 'AiFeedback'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -406,7 +409,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "account" | "order" | "position" | "trade" | "auditLog" | "alert"
+    modelProps: "user" | "account" | "order" | "position" | "trade" | "auditLog" | "alert" | "journal" | "note" | "aiFeedback"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -928,6 +931,228 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    Journal: {
+      payload: Prisma.$JournalPayload<ExtArgs>
+      fields: Prisma.JournalFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.JournalFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$JournalPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.JournalFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$JournalPayload>
+        }
+        findFirst: {
+          args: Prisma.JournalFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$JournalPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.JournalFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$JournalPayload>
+        }
+        findMany: {
+          args: Prisma.JournalFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$JournalPayload>[]
+        }
+        create: {
+          args: Prisma.JournalCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$JournalPayload>
+        }
+        createMany: {
+          args: Prisma.JournalCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.JournalCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$JournalPayload>[]
+        }
+        delete: {
+          args: Prisma.JournalDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$JournalPayload>
+        }
+        update: {
+          args: Prisma.JournalUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$JournalPayload>
+        }
+        deleteMany: {
+          args: Prisma.JournalDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.JournalUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.JournalUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$JournalPayload>[]
+        }
+        upsert: {
+          args: Prisma.JournalUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$JournalPayload>
+        }
+        aggregate: {
+          args: Prisma.JournalAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateJournal>
+        }
+        groupBy: {
+          args: Prisma.JournalGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.JournalGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.JournalCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.JournalCountAggregateOutputType> | number
+        }
+      }
+    }
+    Note: {
+      payload: Prisma.$NotePayload<ExtArgs>
+      fields: Prisma.NoteFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.NoteFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$NotePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.NoteFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$NotePayload>
+        }
+        findFirst: {
+          args: Prisma.NoteFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$NotePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.NoteFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$NotePayload>
+        }
+        findMany: {
+          args: Prisma.NoteFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$NotePayload>[]
+        }
+        create: {
+          args: Prisma.NoteCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$NotePayload>
+        }
+        createMany: {
+          args: Prisma.NoteCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.NoteCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$NotePayload>[]
+        }
+        delete: {
+          args: Prisma.NoteDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$NotePayload>
+        }
+        update: {
+          args: Prisma.NoteUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$NotePayload>
+        }
+        deleteMany: {
+          args: Prisma.NoteDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.NoteUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.NoteUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$NotePayload>[]
+        }
+        upsert: {
+          args: Prisma.NoteUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$NotePayload>
+        }
+        aggregate: {
+          args: Prisma.NoteAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateNote>
+        }
+        groupBy: {
+          args: Prisma.NoteGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.NoteGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.NoteCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.NoteCountAggregateOutputType> | number
+        }
+      }
+    }
+    AiFeedback: {
+      payload: Prisma.$AiFeedbackPayload<ExtArgs>
+      fields: Prisma.AiFeedbackFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.AiFeedbackFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AiFeedbackPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.AiFeedbackFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AiFeedbackPayload>
+        }
+        findFirst: {
+          args: Prisma.AiFeedbackFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AiFeedbackPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.AiFeedbackFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AiFeedbackPayload>
+        }
+        findMany: {
+          args: Prisma.AiFeedbackFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AiFeedbackPayload>[]
+        }
+        create: {
+          args: Prisma.AiFeedbackCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AiFeedbackPayload>
+        }
+        createMany: {
+          args: Prisma.AiFeedbackCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.AiFeedbackCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AiFeedbackPayload>[]
+        }
+        delete: {
+          args: Prisma.AiFeedbackDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AiFeedbackPayload>
+        }
+        update: {
+          args: Prisma.AiFeedbackUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AiFeedbackPayload>
+        }
+        deleteMany: {
+          args: Prisma.AiFeedbackDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.AiFeedbackUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.AiFeedbackUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AiFeedbackPayload>[]
+        }
+        upsert: {
+          args: Prisma.AiFeedbackUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AiFeedbackPayload>
+        }
+        aggregate: {
+          args: Prisma.AiFeedbackAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateAiFeedback>
+        }
+        groupBy: {
+          args: Prisma.AiFeedbackGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AiFeedbackGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.AiFeedbackCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AiFeedbackCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -1036,7 +1261,8 @@ export const PositionScalarFieldEnum = {
   slPrice: 'slPrice',
   tpPrice: 'tpPrice',
   slHit: 'slHit',
-  tpHit: 'tpHit'
+  tpHit: 'tpHit',
+  closedAt: 'closedAt'
 } as const
 
 export type PositionScalarFieldEnum = (typeof PositionScalarFieldEnum)[keyof typeof PositionScalarFieldEnum]
@@ -1084,6 +1310,48 @@ export const AlertScalarFieldEnum = {
 export type AlertScalarFieldEnum = (typeof AlertScalarFieldEnum)[keyof typeof AlertScalarFieldEnum]
 
 
+export const JournalScalarFieldEnum = {
+  id: 'id',
+  accountId: 'accountId',
+  script: 'script',
+  date: 'date',
+  entryTime: 'entryTime',
+  exitTime: 'exitTime',
+  pnl: 'pnl',
+  entryReason: 'entryReason',
+  exitReason: 'exitReason',
+  quantity: 'quantity',
+  createdAt: 'createdAt'
+} as const
+
+export type JournalScalarFieldEnum = (typeof JournalScalarFieldEnum)[keyof typeof JournalScalarFieldEnum]
+
+
+export const NoteScalarFieldEnum = {
+  id: 'id',
+  journalId: 'journalId',
+  content: 'content',
+  createdAt: 'createdAt'
+} as const
+
+export type NoteScalarFieldEnum = (typeof NoteScalarFieldEnum)[keyof typeof NoteScalarFieldEnum]
+
+
+export const AiFeedbackScalarFieldEnum = {
+  id: 'id',
+  accountId: 'accountId',
+  content: 'content',
+  summary: 'summary',
+  biggestWin: 'biggestWin',
+  biggestLoss: 'biggestLoss',
+  totalJournals: 'totalJournals',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type AiFeedbackScalarFieldEnum = (typeof AiFeedbackScalarFieldEnum)[keyof typeof AiFeedbackScalarFieldEnum]
+
+
 export const SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -1098,6 +1366,13 @@ export const NullableJsonNullValueInput = {
 } as const
 
 export type NullableJsonNullValueInput = (typeof NullableJsonNullValueInput)[keyof typeof NullableJsonNullValueInput]
+
+
+export const JsonNullValueInput = {
+  JsonNull: JsonNull
+} as const
+
+export type JsonNullValueInput = (typeof JsonNullValueInput)[keyof typeof JsonNullValueInput]
 
 
 export const QueryMode = {
@@ -1408,6 +1683,9 @@ export type GlobalOmitConfig = {
   trade?: Prisma.TradeOmit
   auditLog?: Prisma.AuditLogOmit
   alert?: Prisma.AlertOmit
+  journal?: Prisma.JournalOmit
+  note?: Prisma.NoteOmit
+  aiFeedback?: Prisma.AiFeedbackOmit
 }
 
 /* Types for Logging */

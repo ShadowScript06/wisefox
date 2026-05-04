@@ -455,6 +455,7 @@ function AccountPage() {
           <p className="text-zinc-400 text-sm mb-4">
             This account may have been removed or you don't have access.
           </p>
+
           <button
             onClick={() => navigate("/dashboard")}
             className="px-4 py-2 bg-cyan-500 hover:bg-cyan-400 text-black rounded-lg font-medium transition"
@@ -493,12 +494,34 @@ function AccountPage() {
               })}
             </p>
           </div>
-          <button
-            onClick={() => navigate("/dashboard")}
-            className="px-3 py-1.5 text-sm rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 transition"
-          >
-            ← Dashboard
-          </button>
+          <div className="flex gap-2">
+            <button
+              onClick={() => navigate("/dashboard")}
+              className="px-3 py-1.5 text-sm rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 transition"
+            >
+              ← Dashboard
+            </button>
+            <button
+              onClick={() => navigate(`/accounts/${id}/overview`)}
+              className="px-3 py-1.5 text-sm rounded-lg bg-cyan-500 hover:bg-cyan-400 text-black transition"
+            >
+              Overview
+            </button>
+
+            <button
+              onClick={() => navigate(`/accounts/${id}/journals`)}
+              className="px-3 py-1.5 text-sm rounded-lg bg-purple-500/15 hover:bg-purple-500 text-purple-300 hover:text-black border border-purple-500/20 transition"
+            >
+              Journals
+            </button>
+
+            <button
+              onClick={() => navigate(`/accounts/${id}/ai-feedback`)}
+              className="px-3 py-1.5 text-sm rounded-lg bg-purple-500/15 hover:bg-purple-500 text-purple-300 hover:text-black border border-purple-500/20 transition"
+            >
+              AI Feedback
+            </button>
+          </div>
         </div>
       </header>
 

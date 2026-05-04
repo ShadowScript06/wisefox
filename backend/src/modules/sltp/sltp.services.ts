@@ -87,6 +87,7 @@ async function fullClose(
       slHit: reason === 'SL',
       tpPrice: null,
       tpHit: reason === 'TP',
+       closedAt:new Date()
     },
   })
 
@@ -149,7 +150,7 @@ async function checkSLTPForAllPositions(): Promise<void> {
     for (const [symbol, position] of symbolMap) {
 
 
-      console.log(position);
+    
       // Skip positions with no SL or TP set
       if (!position.slPrice && !position.tpPrice) continue
 

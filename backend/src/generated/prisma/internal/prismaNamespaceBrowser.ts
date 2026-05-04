@@ -57,7 +57,10 @@ export const ModelName = {
   Position: 'Position',
   Trade: 'Trade',
   AuditLog: 'AuditLog',
-  Alert: 'Alert'
+  Alert: 'Alert',
+  Journal: 'Journal',
+  Note: 'Note',
+  AiFeedback: 'AiFeedback'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -145,7 +148,8 @@ export const PositionScalarFieldEnum = {
   slPrice: 'slPrice',
   tpPrice: 'tpPrice',
   slHit: 'slHit',
-  tpHit: 'tpHit'
+  tpHit: 'tpHit',
+  closedAt: 'closedAt'
 } as const
 
 export type PositionScalarFieldEnum = (typeof PositionScalarFieldEnum)[keyof typeof PositionScalarFieldEnum]
@@ -193,6 +197,48 @@ export const AlertScalarFieldEnum = {
 export type AlertScalarFieldEnum = (typeof AlertScalarFieldEnum)[keyof typeof AlertScalarFieldEnum]
 
 
+export const JournalScalarFieldEnum = {
+  id: 'id',
+  accountId: 'accountId',
+  script: 'script',
+  date: 'date',
+  entryTime: 'entryTime',
+  exitTime: 'exitTime',
+  pnl: 'pnl',
+  entryReason: 'entryReason',
+  exitReason: 'exitReason',
+  quantity: 'quantity',
+  createdAt: 'createdAt'
+} as const
+
+export type JournalScalarFieldEnum = (typeof JournalScalarFieldEnum)[keyof typeof JournalScalarFieldEnum]
+
+
+export const NoteScalarFieldEnum = {
+  id: 'id',
+  journalId: 'journalId',
+  content: 'content',
+  createdAt: 'createdAt'
+} as const
+
+export type NoteScalarFieldEnum = (typeof NoteScalarFieldEnum)[keyof typeof NoteScalarFieldEnum]
+
+
+export const AiFeedbackScalarFieldEnum = {
+  id: 'id',
+  accountId: 'accountId',
+  content: 'content',
+  summary: 'summary',
+  biggestWin: 'biggestWin',
+  biggestLoss: 'biggestLoss',
+  totalJournals: 'totalJournals',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type AiFeedbackScalarFieldEnum = (typeof AiFeedbackScalarFieldEnum)[keyof typeof AiFeedbackScalarFieldEnum]
+
+
 export const SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -207,6 +253,13 @@ export const NullableJsonNullValueInput = {
 } as const
 
 export type NullableJsonNullValueInput = (typeof NullableJsonNullValueInput)[keyof typeof NullableJsonNullValueInput]
+
+
+export const JsonNullValueInput = {
+  JsonNull: JsonNull
+} as const
+
+export type JsonNullValueInput = (typeof JsonNullValueInput)[keyof typeof JsonNullValueInput]
 
 
 export const QueryMode = {

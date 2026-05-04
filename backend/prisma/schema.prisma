@@ -37,6 +37,8 @@ model Account{
   auditLogs AuditLog[]
   netPnl Float? @default(0)
   charges Float? @default(0)
+  journals  Journal[]
+  feedback AiFeedback[]
 }
 
 model Order{
@@ -62,6 +64,7 @@ model Order{
   tpPrice     Float?
   tpQty       Float?
   isBracket   Boolean   @default(false)
+ 
 }
 
 
@@ -83,6 +86,7 @@ model Position{
   tpPrice     Float?    // take profit price
   slHit       Boolean   @default(false)  // already triggered?
   tpHit       Boolean   @default(false)
+   closedAt DateTime?
 }
 model Trade{
   id String @id @default(uuid())
@@ -122,7 +126,61 @@ model Alert{
   type AlertType
   symbol String
 }
+model Journal {
+  id         String   @id @default(cuid())
 
+  accountId  String
+  account    Account  @relation(fields: [accountId], references: [id])
+
+  script String
+  date       DateTime
+
+  entryTime  DateTime
+  exitTime   DateTime?
+
+  pnl        Float?
+
+  entryReason String
+  exitReason  String?
+
+  notes      Note[]
+
+  quantity Int
+
+  createdAt DateTime @default(now())
+}
+
+model Note {
+  id         String   @id @default(cuid())
+
+  journalId  String
+  journal    Journal  @relation(fields: [journalId], references: [id])
+
+  content    String
+
+  createdAt  DateTime @default(now())
+}
+
+model AiFeedback {
+  id            String   @id @default(cuid())
+
+  accountId     String
+  account       Account  @relation(fields: [accountId], references: [id])
+
+  content       Json     // ✅ structured AI output (IMPORTANT CHANGE)
+
+  summary       String?
+
+  biggestWin    Float?
+  biggestLoss   Float?
+
+  totalJournals Int
+
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@index([accountId])
+}
 enum AlertStatus{
   PENDING
   TRIGGERED

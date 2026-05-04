@@ -114,6 +114,8 @@ const cancelOrder = async (input: CancelOrderInput) => {
 const getOrders = async (
   accountId: string,
   status: OrderStatus | undefined,
+  skip: number,
+  take: number
 ) => {
   return prisma.order.findMany({
     where: {
@@ -121,9 +123,27 @@ const getOrders = async (
       ...(status ? { status } : {}),
     },
     orderBy: { createdAt: "desc" },
-    include: { trades: true },
+    skip,
+    take,
+    include: {
+      trades: true,
+    },
   });
 };
+
+const countOrders = async (
+  accountId: string,
+  status: OrderStatus | undefined
+) => {
+  return prisma.order.count({
+    where: {
+      accountId,
+      ...(status ? { status } : {}),
+    },
+  });
+};
+
+
 
 async function expireOrders(): Promise<number> {
   const now = new Date();
@@ -164,6 +184,7 @@ const orderServices = {
   cancelOrder,
   getOrders,
   expireOrders,
+  countOrders
 };
 
 export default orderServices;

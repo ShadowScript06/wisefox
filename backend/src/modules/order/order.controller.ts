@@ -46,22 +46,51 @@ try {
 }
 }
 
-const getAllOrders=async(request:Request,response:Response)=>{
-try {
-    const {accountId}=request.params as any;
 
-    const status=request.query.status as OrderStatus | undefined;
 
-     const orders = await orderServices.getOrders(accountId, status )
-    response.status(200).json({ success: true, data:orders,message:"Orders Fetched." })
-} catch (error) {
+const getAllOrders = async (request: Request, response: Response) => {
+  try {
+    const { accountId } = request.params as { accountId: string };
+
+    const status = request.query.status as OrderStatus | undefined;
+
+    // 🔥 FIXED PAGINATION
+    const page = Number(request.query.page) || 1;
+    const limit = 10; // fixed server-side
+
+    const skip = (page - 1) * limit;
+
+    const orders = await orderServices.getOrders(
+      accountId,
+      status,
+      skip,
+      limit
+    );
+
+    const total = await orderServices.countOrders(accountId, status);
+
+    return response.status(200).json({
+      success: true,
+      data: orders,
+      message: "Orders Fetched.",
+      pagination: {
+        page,
+        limit,
+        total,
+        hasMore: skip + limit < total,
+      },
+    });
+  } catch (error) {
     console.log(error);
-    response.status(500).json({
-        success:false,
-        message:"Internal Server Error."
-    })
-}
-}
+
+    return response.status(500).json({
+      success: false,
+      message: "Internal Server Error.",
+    });
+  }
+};
+
+
 
 const orderController={
     getAllOrders,

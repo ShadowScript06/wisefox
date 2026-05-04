@@ -52,3 +52,18 @@ export type AuditLog = Prisma.AuditLogModel
  * 
  */
 export type Alert = Prisma.AlertModel
+/**
+ * Model Journal
+ * 
+ */
+export type Journal = Prisma.JournalModel
+/**
+ * Model Note
+ * 
+ */
+export type Note = Prisma.NoteModel
+/**
+ * Model AiFeedback
+ * 
+ */
+export type AiFeedback = Prisma.AiFeedbackModel

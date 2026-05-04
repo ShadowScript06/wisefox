@@ -256,6 +256,8 @@ export type AccountWhereInput = {
   orders?: Prisma.OrderListRelationFilter
   positions?: Prisma.PositionListRelationFilter
   auditLogs?: Prisma.AuditLogListRelationFilter
+  journals?: Prisma.JournalListRelationFilter
+  feedback?: Prisma.AiFeedbackListRelationFilter
 }
 
 export type AccountOrderByWithRelationInput = {
@@ -271,6 +273,8 @@ export type AccountOrderByWithRelationInput = {
   orders?: Prisma.OrderOrderByRelationAggregateInput
   positions?: Prisma.PositionOrderByRelationAggregateInput
   auditLogs?: Prisma.AuditLogOrderByRelationAggregateInput
+  journals?: Prisma.JournalOrderByRelationAggregateInput
+  feedback?: Prisma.AiFeedbackOrderByRelationAggregateInput
 }
 
 export type AccountWhereUniqueInput = Prisma.AtLeast<{
@@ -289,6 +293,8 @@ export type AccountWhereUniqueInput = Prisma.AtLeast<{
   orders?: Prisma.OrderListRelationFilter
   positions?: Prisma.PositionListRelationFilter
   auditLogs?: Prisma.AuditLogListRelationFilter
+  journals?: Prisma.JournalListRelationFilter
+  feedback?: Prisma.AiFeedbackListRelationFilter
 }, "id">
 
 export type AccountOrderByWithAggregationInput = {
@@ -333,6 +339,8 @@ export type AccountCreateInput = {
   orders?: Prisma.OrderCreateNestedManyWithoutAccountInput
   positions?: Prisma.PositionCreateNestedManyWithoutAccountInput
   auditLogs?: Prisma.AuditLogCreateNestedManyWithoutAccountInput
+  journals?: Prisma.JournalCreateNestedManyWithoutAccountInput
+  feedback?: Prisma.AiFeedbackCreateNestedManyWithoutAccountInput
 }
 
 export type AccountUncheckedCreateInput = {
@@ -347,6 +355,8 @@ export type AccountUncheckedCreateInput = {
   orders?: Prisma.OrderUncheckedCreateNestedManyWithoutAccountInput
   positions?: Prisma.PositionUncheckedCreateNestedManyWithoutAccountInput
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutAccountInput
+  journals?: Prisma.JournalUncheckedCreateNestedManyWithoutAccountInput
+  feedback?: Prisma.AiFeedbackUncheckedCreateNestedManyWithoutAccountInput
 }
 
 export type AccountUpdateInput = {
@@ -361,6 +371,8 @@ export type AccountUpdateInput = {
   orders?: Prisma.OrderUpdateManyWithoutAccountNestedInput
   positions?: Prisma.PositionUpdateManyWithoutAccountNestedInput
   auditLogs?: Prisma.AuditLogUpdateManyWithoutAccountNestedInput
+  journals?: Prisma.JournalUpdateManyWithoutAccountNestedInput
+  feedback?: Prisma.AiFeedbackUpdateManyWithoutAccountNestedInput
 }
 
 export type AccountUncheckedUpdateInput = {
@@ -375,6 +387,8 @@ export type AccountUncheckedUpdateInput = {
   orders?: Prisma.OrderUncheckedUpdateManyWithoutAccountNestedInput
   positions?: Prisma.PositionUncheckedUpdateManyWithoutAccountNestedInput
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutAccountNestedInput
+  journals?: Prisma.JournalUncheckedUpdateManyWithoutAccountNestedInput
+  feedback?: Prisma.AiFeedbackUncheckedUpdateManyWithoutAccountNestedInput
 }
 
 export type AccountCreateManyInput = {
@@ -571,6 +585,34 @@ export type AccountUpdateOneRequiredWithoutAuditLogsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.AccountUpdateToOneWithWhereWithoutAuditLogsInput, Prisma.AccountUpdateWithoutAuditLogsInput>, Prisma.AccountUncheckedUpdateWithoutAuditLogsInput>
 }
 
+export type AccountCreateNestedOneWithoutJournalsInput = {
+  create?: Prisma.XOR<Prisma.AccountCreateWithoutJournalsInput, Prisma.AccountUncheckedCreateWithoutJournalsInput>
+  connectOrCreate?: Prisma.AccountCreateOrConnectWithoutJournalsInput
+  connect?: Prisma.AccountWhereUniqueInput
+}
+
+export type AccountUpdateOneRequiredWithoutJournalsNestedInput = {
+  create?: Prisma.XOR<Prisma.AccountCreateWithoutJournalsInput, Prisma.AccountUncheckedCreateWithoutJournalsInput>
+  connectOrCreate?: Prisma.AccountCreateOrConnectWithoutJournalsInput
+  upsert?: Prisma.AccountUpsertWithoutJournalsInput
+  connect?: Prisma.AccountWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.AccountUpdateToOneWithWhereWithoutJournalsInput, Prisma.AccountUpdateWithoutJournalsInput>, Prisma.AccountUncheckedUpdateWithoutJournalsInput>
+}
+
+export type AccountCreateNestedOneWithoutFeedbackInput = {
+  create?: Prisma.XOR<Prisma.AccountCreateWithoutFeedbackInput, Prisma.AccountUncheckedCreateWithoutFeedbackInput>
+  connectOrCreate?: Prisma.AccountCreateOrConnectWithoutFeedbackInput
+  connect?: Prisma.AccountWhereUniqueInput
+}
+
+export type AccountUpdateOneRequiredWithoutFeedbackNestedInput = {
+  create?: Prisma.XOR<Prisma.AccountCreateWithoutFeedbackInput, Prisma.AccountUncheckedCreateWithoutFeedbackInput>
+  connectOrCreate?: Prisma.AccountCreateOrConnectWithoutFeedbackInput
+  upsert?: Prisma.AccountUpsertWithoutFeedbackInput
+  connect?: Prisma.AccountWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.AccountUpdateToOneWithWhereWithoutFeedbackInput, Prisma.AccountUpdateWithoutFeedbackInput>, Prisma.AccountUncheckedUpdateWithoutFeedbackInput>
+}
+
 export type AccountCreateWithoutUserInput = {
   id?: string
   name: string
@@ -582,6 +624,8 @@ export type AccountCreateWithoutUserInput = {
   orders?: Prisma.OrderCreateNestedManyWithoutAccountInput
   positions?: Prisma.PositionCreateNestedManyWithoutAccountInput
   auditLogs?: Prisma.AuditLogCreateNestedManyWithoutAccountInput
+  journals?: Prisma.JournalCreateNestedManyWithoutAccountInput
+  feedback?: Prisma.AiFeedbackCreateNestedManyWithoutAccountInput
 }
 
 export type AccountUncheckedCreateWithoutUserInput = {
@@ -595,6 +639,8 @@ export type AccountUncheckedCreateWithoutUserInput = {
   orders?: Prisma.OrderUncheckedCreateNestedManyWithoutAccountInput
   positions?: Prisma.PositionUncheckedCreateNestedManyWithoutAccountInput
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutAccountInput
+  journals?: Prisma.JournalUncheckedCreateNestedManyWithoutAccountInput
+  feedback?: Prisma.AiFeedbackUncheckedCreateNestedManyWithoutAccountInput
 }
 
 export type AccountCreateOrConnectWithoutUserInput = {
@@ -648,6 +694,8 @@ export type AccountCreateWithoutOrdersInput = {
   user: Prisma.UserCreateNestedOneWithoutAccountsInput
   positions?: Prisma.PositionCreateNestedManyWithoutAccountInput
   auditLogs?: Prisma.AuditLogCreateNestedManyWithoutAccountInput
+  journals?: Prisma.JournalCreateNestedManyWithoutAccountInput
+  feedback?: Prisma.AiFeedbackCreateNestedManyWithoutAccountInput
 }
 
 export type AccountUncheckedCreateWithoutOrdersInput = {
@@ -661,6 +709,8 @@ export type AccountUncheckedCreateWithoutOrdersInput = {
   charges?: number | null
   positions?: Prisma.PositionUncheckedCreateNestedManyWithoutAccountInput
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutAccountInput
+  journals?: Prisma.JournalUncheckedCreateNestedManyWithoutAccountInput
+  feedback?: Prisma.AiFeedbackUncheckedCreateNestedManyWithoutAccountInput
 }
 
 export type AccountCreateOrConnectWithoutOrdersInput = {
@@ -690,6 +740,8 @@ export type AccountUpdateWithoutOrdersInput = {
   user?: Prisma.UserUpdateOneRequiredWithoutAccountsNestedInput
   positions?: Prisma.PositionUpdateManyWithoutAccountNestedInput
   auditLogs?: Prisma.AuditLogUpdateManyWithoutAccountNestedInput
+  journals?: Prisma.JournalUpdateManyWithoutAccountNestedInput
+  feedback?: Prisma.AiFeedbackUpdateManyWithoutAccountNestedInput
 }
 
 export type AccountUncheckedUpdateWithoutOrdersInput = {
@@ -703,6 +755,8 @@ export type AccountUncheckedUpdateWithoutOrdersInput = {
   charges?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   positions?: Prisma.PositionUncheckedUpdateManyWithoutAccountNestedInput
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutAccountNestedInput
+  journals?: Prisma.JournalUncheckedUpdateManyWithoutAccountNestedInput
+  feedback?: Prisma.AiFeedbackUncheckedUpdateManyWithoutAccountNestedInput
 }
 
 export type AccountCreateWithoutPositionsInput = {
@@ -716,6 +770,8 @@ export type AccountCreateWithoutPositionsInput = {
   user: Prisma.UserCreateNestedOneWithoutAccountsInput
   orders?: Prisma.OrderCreateNestedManyWithoutAccountInput
   auditLogs?: Prisma.AuditLogCreateNestedManyWithoutAccountInput
+  journals?: Prisma.JournalCreateNestedManyWithoutAccountInput
+  feedback?: Prisma.AiFeedbackCreateNestedManyWithoutAccountInput
 }
 
 export type AccountUncheckedCreateWithoutPositionsInput = {
@@ -729,6 +785,8 @@ export type AccountUncheckedCreateWithoutPositionsInput = {
   charges?: number | null
   orders?: Prisma.OrderUncheckedCreateNestedManyWithoutAccountInput
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutAccountInput
+  journals?: Prisma.JournalUncheckedCreateNestedManyWithoutAccountInput
+  feedback?: Prisma.AiFeedbackUncheckedCreateNestedManyWithoutAccountInput
 }
 
 export type AccountCreateOrConnectWithoutPositionsInput = {
@@ -758,6 +816,8 @@ export type AccountUpdateWithoutPositionsInput = {
   user?: Prisma.UserUpdateOneRequiredWithoutAccountsNestedInput
   orders?: Prisma.OrderUpdateManyWithoutAccountNestedInput
   auditLogs?: Prisma.AuditLogUpdateManyWithoutAccountNestedInput
+  journals?: Prisma.JournalUpdateManyWithoutAccountNestedInput
+  feedback?: Prisma.AiFeedbackUpdateManyWithoutAccountNestedInput
 }
 
 export type AccountUncheckedUpdateWithoutPositionsInput = {
@@ -771,6 +831,8 @@ export type AccountUncheckedUpdateWithoutPositionsInput = {
   charges?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   orders?: Prisma.OrderUncheckedUpdateManyWithoutAccountNestedInput
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutAccountNestedInput
+  journals?: Prisma.JournalUncheckedUpdateManyWithoutAccountNestedInput
+  feedback?: Prisma.AiFeedbackUncheckedUpdateManyWithoutAccountNestedInput
 }
 
 export type AccountCreateWithoutAuditLogsInput = {
@@ -784,6 +846,8 @@ export type AccountCreateWithoutAuditLogsInput = {
   user: Prisma.UserCreateNestedOneWithoutAccountsInput
   orders?: Prisma.OrderCreateNestedManyWithoutAccountInput
   positions?: Prisma.PositionCreateNestedManyWithoutAccountInput
+  journals?: Prisma.JournalCreateNestedManyWithoutAccountInput
+  feedback?: Prisma.AiFeedbackCreateNestedManyWithoutAccountInput
 }
 
 export type AccountUncheckedCreateWithoutAuditLogsInput = {
@@ -797,6 +861,8 @@ export type AccountUncheckedCreateWithoutAuditLogsInput = {
   charges?: number | null
   orders?: Prisma.OrderUncheckedCreateNestedManyWithoutAccountInput
   positions?: Prisma.PositionUncheckedCreateNestedManyWithoutAccountInput
+  journals?: Prisma.JournalUncheckedCreateNestedManyWithoutAccountInput
+  feedback?: Prisma.AiFeedbackUncheckedCreateNestedManyWithoutAccountInput
 }
 
 export type AccountCreateOrConnectWithoutAuditLogsInput = {
@@ -826,6 +892,8 @@ export type AccountUpdateWithoutAuditLogsInput = {
   user?: Prisma.UserUpdateOneRequiredWithoutAccountsNestedInput
   orders?: Prisma.OrderUpdateManyWithoutAccountNestedInput
   positions?: Prisma.PositionUpdateManyWithoutAccountNestedInput
+  journals?: Prisma.JournalUpdateManyWithoutAccountNestedInput
+  feedback?: Prisma.AiFeedbackUpdateManyWithoutAccountNestedInput
 }
 
 export type AccountUncheckedUpdateWithoutAuditLogsInput = {
@@ -839,6 +907,160 @@ export type AccountUncheckedUpdateWithoutAuditLogsInput = {
   charges?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   orders?: Prisma.OrderUncheckedUpdateManyWithoutAccountNestedInput
   positions?: Prisma.PositionUncheckedUpdateManyWithoutAccountNestedInput
+  journals?: Prisma.JournalUncheckedUpdateManyWithoutAccountNestedInput
+  feedback?: Prisma.AiFeedbackUncheckedUpdateManyWithoutAccountNestedInput
+}
+
+export type AccountCreateWithoutJournalsInput = {
+  id?: string
+  name: string
+  balance: number
+  createdAt?: Date | string
+  marginUsed?: number
+  netPnl?: number | null
+  charges?: number | null
+  user: Prisma.UserCreateNestedOneWithoutAccountsInput
+  orders?: Prisma.OrderCreateNestedManyWithoutAccountInput
+  positions?: Prisma.PositionCreateNestedManyWithoutAccountInput
+  auditLogs?: Prisma.AuditLogCreateNestedManyWithoutAccountInput
+  feedback?: Prisma.AiFeedbackCreateNestedManyWithoutAccountInput
+}
+
+export type AccountUncheckedCreateWithoutJournalsInput = {
+  id?: string
+  name: string
+  balance: number
+  userId: string
+  createdAt?: Date | string
+  marginUsed?: number
+  netPnl?: number | null
+  charges?: number | null
+  orders?: Prisma.OrderUncheckedCreateNestedManyWithoutAccountInput
+  positions?: Prisma.PositionUncheckedCreateNestedManyWithoutAccountInput
+  auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutAccountInput
+  feedback?: Prisma.AiFeedbackUncheckedCreateNestedManyWithoutAccountInput
+}
+
+export type AccountCreateOrConnectWithoutJournalsInput = {
+  where: Prisma.AccountWhereUniqueInput
+  create: Prisma.XOR<Prisma.AccountCreateWithoutJournalsInput, Prisma.AccountUncheckedCreateWithoutJournalsInput>
+}
+
+export type AccountUpsertWithoutJournalsInput = {
+  update: Prisma.XOR<Prisma.AccountUpdateWithoutJournalsInput, Prisma.AccountUncheckedUpdateWithoutJournalsInput>
+  create: Prisma.XOR<Prisma.AccountCreateWithoutJournalsInput, Prisma.AccountUncheckedCreateWithoutJournalsInput>
+  where?: Prisma.AccountWhereInput
+}
+
+export type AccountUpdateToOneWithWhereWithoutJournalsInput = {
+  where?: Prisma.AccountWhereInput
+  data: Prisma.XOR<Prisma.AccountUpdateWithoutJournalsInput, Prisma.AccountUncheckedUpdateWithoutJournalsInput>
+}
+
+export type AccountUpdateWithoutJournalsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  balance?: Prisma.FloatFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  marginUsed?: Prisma.FloatFieldUpdateOperationsInput | number
+  netPnl?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  charges?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  user?: Prisma.UserUpdateOneRequiredWithoutAccountsNestedInput
+  orders?: Prisma.OrderUpdateManyWithoutAccountNestedInput
+  positions?: Prisma.PositionUpdateManyWithoutAccountNestedInput
+  auditLogs?: Prisma.AuditLogUpdateManyWithoutAccountNestedInput
+  feedback?: Prisma.AiFeedbackUpdateManyWithoutAccountNestedInput
+}
+
+export type AccountUncheckedUpdateWithoutJournalsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  balance?: Prisma.FloatFieldUpdateOperationsInput | number
+  userId?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  marginUsed?: Prisma.FloatFieldUpdateOperationsInput | number
+  netPnl?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  charges?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  orders?: Prisma.OrderUncheckedUpdateManyWithoutAccountNestedInput
+  positions?: Prisma.PositionUncheckedUpdateManyWithoutAccountNestedInput
+  auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutAccountNestedInput
+  feedback?: Prisma.AiFeedbackUncheckedUpdateManyWithoutAccountNestedInput
+}
+
+export type AccountCreateWithoutFeedbackInput = {
+  id?: string
+  name: string
+  balance: number
+  createdAt?: Date | string
+  marginUsed?: number
+  netPnl?: number | null
+  charges?: number | null
+  user: Prisma.UserCreateNestedOneWithoutAccountsInput
+  orders?: Prisma.OrderCreateNestedManyWithoutAccountInput
+  positions?: Prisma.PositionCreateNestedManyWithoutAccountInput
+  auditLogs?: Prisma.AuditLogCreateNestedManyWithoutAccountInput
+  journals?: Prisma.JournalCreateNestedManyWithoutAccountInput
+}
+
+export type AccountUncheckedCreateWithoutFeedbackInput = {
+  id?: string
+  name: string
+  balance: number
+  userId: string
+  createdAt?: Date | string
+  marginUsed?: number
+  netPnl?: number | null
+  charges?: number | null
+  orders?: Prisma.OrderUncheckedCreateNestedManyWithoutAccountInput
+  positions?: Prisma.PositionUncheckedCreateNestedManyWithoutAccountInput
+  auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutAccountInput
+  journals?: Prisma.JournalUncheckedCreateNestedManyWithoutAccountInput
+}
+
+export type AccountCreateOrConnectWithoutFeedbackInput = {
+  where: Prisma.AccountWhereUniqueInput
+  create: Prisma.XOR<Prisma.AccountCreateWithoutFeedbackInput, Prisma.AccountUncheckedCreateWithoutFeedbackInput>
+}
+
+export type AccountUpsertWithoutFeedbackInput = {
+  update: Prisma.XOR<Prisma.AccountUpdateWithoutFeedbackInput, Prisma.AccountUncheckedUpdateWithoutFeedbackInput>
+  create: Prisma.XOR<Prisma.AccountCreateWithoutFeedbackInput, Prisma.AccountUncheckedCreateWithoutFeedbackInput>
+  where?: Prisma.AccountWhereInput
+}
+
+export type AccountUpdateToOneWithWhereWithoutFeedbackInput = {
+  where?: Prisma.AccountWhereInput
+  data: Prisma.XOR<Prisma.AccountUpdateWithoutFeedbackInput, Prisma.AccountUncheckedUpdateWithoutFeedbackInput>
+}
+
+export type AccountUpdateWithoutFeedbackInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  balance?: Prisma.FloatFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  marginUsed?: Prisma.FloatFieldUpdateOperationsInput | number
+  netPnl?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  charges?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  user?: Prisma.UserUpdateOneRequiredWithoutAccountsNestedInput
+  orders?: Prisma.OrderUpdateManyWithoutAccountNestedInput
+  positions?: Prisma.PositionUpdateManyWithoutAccountNestedInput
+  auditLogs?: Prisma.AuditLogUpdateManyWithoutAccountNestedInput
+  journals?: Prisma.JournalUpdateManyWithoutAccountNestedInput
+}
+
+export type AccountUncheckedUpdateWithoutFeedbackInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  balance?: Prisma.FloatFieldUpdateOperationsInput | number
+  userId?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  marginUsed?: Prisma.FloatFieldUpdateOperationsInput | number
+  netPnl?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  charges?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  orders?: Prisma.OrderUncheckedUpdateManyWithoutAccountNestedInput
+  positions?: Prisma.PositionUncheckedUpdateManyWithoutAccountNestedInput
+  auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutAccountNestedInput
+  journals?: Prisma.JournalUncheckedUpdateManyWithoutAccountNestedInput
 }
 
 export type AccountCreateManyUserInput = {
@@ -862,6 +1084,8 @@ export type AccountUpdateWithoutUserInput = {
   orders?: Prisma.OrderUpdateManyWithoutAccountNestedInput
   positions?: Prisma.PositionUpdateManyWithoutAccountNestedInput
   auditLogs?: Prisma.AuditLogUpdateManyWithoutAccountNestedInput
+  journals?: Prisma.JournalUpdateManyWithoutAccountNestedInput
+  feedback?: Prisma.AiFeedbackUpdateManyWithoutAccountNestedInput
 }
 
 export type AccountUncheckedUpdateWithoutUserInput = {
@@ -875,6 +1099,8 @@ export type AccountUncheckedUpdateWithoutUserInput = {
   orders?: Prisma.OrderUncheckedUpdateManyWithoutAccountNestedInput
   positions?: Prisma.PositionUncheckedUpdateManyWithoutAccountNestedInput
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutAccountNestedInput
+  journals?: Prisma.JournalUncheckedUpdateManyWithoutAccountNestedInput
+  feedback?: Prisma.AiFeedbackUncheckedUpdateManyWithoutAccountNestedInput
 }
 
 export type AccountUncheckedUpdateManyWithoutUserInput = {
@@ -896,12 +1122,16 @@ export type AccountCountOutputType = {
   orders: number
   positions: number
   auditLogs: number
+  journals: number
+  feedback: number
 }
 
 export type AccountCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   orders?: boolean | AccountCountOutputTypeCountOrdersArgs
   positions?: boolean | AccountCountOutputTypeCountPositionsArgs
   auditLogs?: boolean | AccountCountOutputTypeCountAuditLogsArgs
+  journals?: boolean | AccountCountOutputTypeCountJournalsArgs
+  feedback?: boolean | AccountCountOutputTypeCountFeedbackArgs
 }
 
 /**
@@ -935,6 +1165,20 @@ export type AccountCountOutputTypeCountAuditLogsArgs<ExtArgs extends runtime.Typ
   where?: Prisma.AuditLogWhereInput
 }
 
+/**
+ * AccountCountOutputType without action
+ */
+export type AccountCountOutputTypeCountJournalsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.JournalWhereInput
+}
+
+/**
+ * AccountCountOutputType without action
+ */
+export type AccountCountOutputTypeCountFeedbackArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.AiFeedbackWhereInput
+}
+
 
 export type AccountSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -949,6 +1193,8 @@ export type AccountSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   orders?: boolean | Prisma.Account$ordersArgs<ExtArgs>
   positions?: boolean | Prisma.Account$positionsArgs<ExtArgs>
   auditLogs?: boolean | Prisma.Account$auditLogsArgs<ExtArgs>
+  journals?: boolean | Prisma.Account$journalsArgs<ExtArgs>
+  feedback?: boolean | Prisma.Account$feedbackArgs<ExtArgs>
   _count?: boolean | Prisma.AccountCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["account"]>
 
@@ -993,6 +1239,8 @@ export type AccountInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs
   orders?: boolean | Prisma.Account$ordersArgs<ExtArgs>
   positions?: boolean | Prisma.Account$positionsArgs<ExtArgs>
   auditLogs?: boolean | Prisma.Account$auditLogsArgs<ExtArgs>
+  journals?: boolean | Prisma.Account$journalsArgs<ExtArgs>
+  feedback?: boolean | Prisma.Account$feedbackArgs<ExtArgs>
   _count?: boolean | Prisma.AccountCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type AccountIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1009,6 +1257,8 @@ export type $AccountPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     orders: Prisma.$OrderPayload<ExtArgs>[]
     positions: Prisma.$PositionPayload<ExtArgs>[]
     auditLogs: Prisma.$AuditLogPayload<ExtArgs>[]
+    journals: Prisma.$JournalPayload<ExtArgs>[]
+    feedback: Prisma.$AiFeedbackPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1417,6 +1667,8 @@ export interface Prisma__AccountClient<T, Null = never, ExtArgs extends runtime.
   orders<T extends Prisma.Account$ordersArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Account$ordersArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$OrderPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   positions<T extends Prisma.Account$positionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Account$positionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PositionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   auditLogs<T extends Prisma.Account$auditLogsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Account$auditLogsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AuditLogPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  journals<T extends Prisma.Account$journalsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Account$journalsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$JournalPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  feedback<T extends Prisma.Account$feedbackArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Account$feedbackArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AiFeedbackPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1924,6 +2176,54 @@ export type Account$auditLogsArgs<ExtArgs extends runtime.Types.Extensions.Inter
   take?: number
   skip?: number
   distinct?: Prisma.AuditLogScalarFieldEnum | Prisma.AuditLogScalarFieldEnum[]
+}
+
+/**
+ * Account.journals
+ */
+export type Account$journalsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Journal
+   */
+  select?: Prisma.JournalSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Journal
+   */
+  omit?: Prisma.JournalOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.JournalInclude<ExtArgs> | null
+  where?: Prisma.JournalWhereInput
+  orderBy?: Prisma.JournalOrderByWithRelationInput | Prisma.JournalOrderByWithRelationInput[]
+  cursor?: Prisma.JournalWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.JournalScalarFieldEnum | Prisma.JournalScalarFieldEnum[]
+}
+
+/**
+ * Account.feedback
+ */
+export type Account$feedbackArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the AiFeedback
+   */
+  select?: Prisma.AiFeedbackSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the AiFeedback
+   */
+  omit?: Prisma.AiFeedbackOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.AiFeedbackInclude<ExtArgs> | null
+  where?: Prisma.AiFeedbackWhereInput
+  orderBy?: Prisma.AiFeedbackOrderByWithRelationInput | Prisma.AiFeedbackOrderByWithRelationInput[]
+  cursor?: Prisma.AiFeedbackWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.AiFeedbackScalarFieldEnum | Prisma.AiFeedbackScalarFieldEnum[]
 }
 
 /**

@@ -63,6 +63,7 @@ export type PositionMinAggregateOutputType = {
   tpPrice: number | null
   slHit: boolean | null
   tpHit: boolean | null
+  closedAt: Date | null
 }
 
 export type PositionMaxAggregateOutputType = {
@@ -82,6 +83,7 @@ export type PositionMaxAggregateOutputType = {
   tpPrice: number | null
   slHit: boolean | null
   tpHit: boolean | null
+  closedAt: Date | null
 }
 
 export type PositionCountAggregateOutputType = {
@@ -101,6 +103,7 @@ export type PositionCountAggregateOutputType = {
   tpPrice: number
   slHit: number
   tpHit: number
+  closedAt: number
   _all: number
 }
 
@@ -142,6 +145,7 @@ export type PositionMinAggregateInputType = {
   tpPrice?: true
   slHit?: true
   tpHit?: true
+  closedAt?: true
 }
 
 export type PositionMaxAggregateInputType = {
@@ -161,6 +165,7 @@ export type PositionMaxAggregateInputType = {
   tpPrice?: true
   slHit?: true
   tpHit?: true
+  closedAt?: true
 }
 
 export type PositionCountAggregateInputType = {
@@ -180,6 +185,7 @@ export type PositionCountAggregateInputType = {
   tpPrice?: true
   slHit?: true
   tpHit?: true
+  closedAt?: true
   _all?: true
 }
 
@@ -286,6 +292,7 @@ export type PositionGroupByOutputType = {
   tpPrice: number | null
   slHit: boolean
   tpHit: boolean
+  closedAt: Date | null
   _count: PositionCountAggregateOutputType | null
   _avg: PositionAvgAggregateOutputType | null
   _sum: PositionSumAggregateOutputType | null
@@ -328,6 +335,7 @@ export type PositionWhereInput = {
   tpPrice?: Prisma.FloatNullableFilter<"Position"> | number | null
   slHit?: Prisma.BoolFilter<"Position"> | boolean
   tpHit?: Prisma.BoolFilter<"Position"> | boolean
+  closedAt?: Prisma.DateTimeNullableFilter<"Position"> | Date | string | null
   account?: Prisma.XOR<Prisma.AccountScalarRelationFilter, Prisma.AccountWhereInput>
 }
 
@@ -348,6 +356,7 @@ export type PositionOrderByWithRelationInput = {
   tpPrice?: Prisma.SortOrderInput | Prisma.SortOrder
   slHit?: Prisma.SortOrder
   tpHit?: Prisma.SortOrder
+  closedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   account?: Prisma.AccountOrderByWithRelationInput
 }
 
@@ -371,6 +380,7 @@ export type PositionWhereUniqueInput = Prisma.AtLeast<{
   tpPrice?: Prisma.FloatNullableFilter<"Position"> | number | null
   slHit?: Prisma.BoolFilter<"Position"> | boolean
   tpHit?: Prisma.BoolFilter<"Position"> | boolean
+  closedAt?: Prisma.DateTimeNullableFilter<"Position"> | Date | string | null
   account?: Prisma.XOR<Prisma.AccountScalarRelationFilter, Prisma.AccountWhereInput>
 }, "id">
 
@@ -391,6 +401,7 @@ export type PositionOrderByWithAggregationInput = {
   tpPrice?: Prisma.SortOrderInput | Prisma.SortOrder
   slHit?: Prisma.SortOrder
   tpHit?: Prisma.SortOrder
+  closedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.PositionCountOrderByAggregateInput
   _avg?: Prisma.PositionAvgOrderByAggregateInput
   _max?: Prisma.PositionMaxOrderByAggregateInput
@@ -418,6 +429,7 @@ export type PositionScalarWhereWithAggregatesInput = {
   tpPrice?: Prisma.FloatNullableWithAggregatesFilter<"Position"> | number | null
   slHit?: Prisma.BoolWithAggregatesFilter<"Position"> | boolean
   tpHit?: Prisma.BoolWithAggregatesFilter<"Position"> | boolean
+  closedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Position"> | Date | string | null
 }
 
 export type PositionCreateInput = {
@@ -436,6 +448,7 @@ export type PositionCreateInput = {
   tpPrice?: number | null
   slHit?: boolean
   tpHit?: boolean
+  closedAt?: Date | string | null
   account: Prisma.AccountCreateNestedOneWithoutPositionsInput
 }
 
@@ -456,6 +469,7 @@ export type PositionUncheckedCreateInput = {
   tpPrice?: number | null
   slHit?: boolean
   tpHit?: boolean
+  closedAt?: Date | string | null
 }
 
 export type PositionUpdateInput = {
@@ -474,6 +488,7 @@ export type PositionUpdateInput = {
   tpPrice?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   slHit?: Prisma.BoolFieldUpdateOperationsInput | boolean
   tpHit?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   account?: Prisma.AccountUpdateOneRequiredWithoutPositionsNestedInput
 }
 
@@ -494,6 +509,7 @@ export type PositionUncheckedUpdateInput = {
   tpPrice?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   slHit?: Prisma.BoolFieldUpdateOperationsInput | boolean
   tpHit?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 export type PositionCreateManyInput = {
@@ -513,6 +529,7 @@ export type PositionCreateManyInput = {
   tpPrice?: number | null
   slHit?: boolean
   tpHit?: boolean
+  closedAt?: Date | string | null
 }
 
 export type PositionUpdateManyMutationInput = {
@@ -531,6 +548,7 @@ export type PositionUpdateManyMutationInput = {
   tpPrice?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   slHit?: Prisma.BoolFieldUpdateOperationsInput | boolean
   tpHit?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 export type PositionUncheckedUpdateManyInput = {
@@ -550,6 +568,7 @@ export type PositionUncheckedUpdateManyInput = {
   tpPrice?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   slHit?: Prisma.BoolFieldUpdateOperationsInput | boolean
   tpHit?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 export type PositionListRelationFilter = {
@@ -579,6 +598,7 @@ export type PositionCountOrderByAggregateInput = {
   tpPrice?: Prisma.SortOrder
   slHit?: Prisma.SortOrder
   tpHit?: Prisma.SortOrder
+  closedAt?: Prisma.SortOrder
 }
 
 export type PositionAvgOrderByAggregateInput = {
@@ -608,6 +628,7 @@ export type PositionMaxOrderByAggregateInput = {
   tpPrice?: Prisma.SortOrder
   slHit?: Prisma.SortOrder
   tpHit?: Prisma.SortOrder
+  closedAt?: Prisma.SortOrder
 }
 
 export type PositionMinOrderByAggregateInput = {
@@ -627,6 +648,7 @@ export type PositionMinOrderByAggregateInput = {
   tpPrice?: Prisma.SortOrder
   slHit?: Prisma.SortOrder
   tpHit?: Prisma.SortOrder
+  closedAt?: Prisma.SortOrder
 }
 
 export type PositionSumOrderByAggregateInput = {
@@ -697,6 +719,7 @@ export type PositionCreateWithoutAccountInput = {
   tpPrice?: number | null
   slHit?: boolean
   tpHit?: boolean
+  closedAt?: Date | string | null
 }
 
 export type PositionUncheckedCreateWithoutAccountInput = {
@@ -715,6 +738,7 @@ export type PositionUncheckedCreateWithoutAccountInput = {
   tpPrice?: number | null
   slHit?: boolean
   tpHit?: boolean
+  closedAt?: Date | string | null
 }
 
 export type PositionCreateOrConnectWithoutAccountInput = {
@@ -763,6 +787,7 @@ export type PositionScalarWhereInput = {
   tpPrice?: Prisma.FloatNullableFilter<"Position"> | number | null
   slHit?: Prisma.BoolFilter<"Position"> | boolean
   tpHit?: Prisma.BoolFilter<"Position"> | boolean
+  closedAt?: Prisma.DateTimeNullableFilter<"Position"> | Date | string | null
 }
 
 export type PositionCreateManyAccountInput = {
@@ -781,6 +806,7 @@ export type PositionCreateManyAccountInput = {
   tpPrice?: number | null
   slHit?: boolean
   tpHit?: boolean
+  closedAt?: Date | string | null
 }
 
 export type PositionUpdateWithoutAccountInput = {
@@ -799,6 +825,7 @@ export type PositionUpdateWithoutAccountInput = {
   tpPrice?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   slHit?: Prisma.BoolFieldUpdateOperationsInput | boolean
   tpHit?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 export type PositionUncheckedUpdateWithoutAccountInput = {
@@ -817,6 +844,7 @@ export type PositionUncheckedUpdateWithoutAccountInput = {
   tpPrice?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   slHit?: Prisma.BoolFieldUpdateOperationsInput | boolean
   tpHit?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 export type PositionUncheckedUpdateManyWithoutAccountInput = {
@@ -835,6 +863,7 @@ export type PositionUncheckedUpdateManyWithoutAccountInput = {
   tpPrice?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   slHit?: Prisma.BoolFieldUpdateOperationsInput | boolean
   tpHit?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 
@@ -856,6 +885,7 @@ export type PositionSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   tpPrice?: boolean
   slHit?: boolean
   tpHit?: boolean
+  closedAt?: boolean
   account?: boolean | Prisma.AccountDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["position"]>
 
@@ -876,6 +906,7 @@ export type PositionSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exte
   tpPrice?: boolean
   slHit?: boolean
   tpHit?: boolean
+  closedAt?: boolean
   account?: boolean | Prisma.AccountDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["position"]>
 
@@ -896,6 +927,7 @@ export type PositionSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exte
   tpPrice?: boolean
   slHit?: boolean
   tpHit?: boolean
+  closedAt?: boolean
   account?: boolean | Prisma.AccountDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["position"]>
 
@@ -916,9 +948,10 @@ export type PositionSelectScalar = {
   tpPrice?: boolean
   slHit?: boolean
   tpHit?: boolean
+  closedAt?: boolean
 }
 
-export type PositionOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "accountId" | "symbol" | "direction" | "quantity" | "avgEntryPrice" | "realizedPnl" | "isOpen" | "createdAt" | "updatedAt" | "leverage" | "marginUsed" | "slPrice" | "tpPrice" | "slHit" | "tpHit", ExtArgs["result"]["position"]>
+export type PositionOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "accountId" | "symbol" | "direction" | "quantity" | "avgEntryPrice" | "realizedPnl" | "isOpen" | "createdAt" | "updatedAt" | "leverage" | "marginUsed" | "slPrice" | "tpPrice" | "slHit" | "tpHit" | "closedAt", ExtArgs["result"]["position"]>
 export type PositionInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   account?: boolean | Prisma.AccountDefaultArgs<ExtArgs>
 }
@@ -951,6 +984,7 @@ export type $PositionPayload<ExtArgs extends runtime.Types.Extensions.InternalAr
     tpPrice: number | null
     slHit: boolean
     tpHit: boolean
+    closedAt: Date | null
   }, ExtArgs["result"]["position"]>
   composites: {}
 }
@@ -1391,6 +1425,7 @@ export interface PositionFieldRefs {
   readonly tpPrice: Prisma.FieldRef<"Position", 'Float'>
   readonly slHit: Prisma.FieldRef<"Position", 'Boolean'>
   readonly tpHit: Prisma.FieldRef<"Position", 'Boolean'>
+  readonly closedAt: Prisma.FieldRef<"Position", 'DateTime'>
 }
     
 

@@ -16,6 +16,10 @@ import { remove } from "./redux/notificationSlice";
 
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import AccountOverview from "./pages/AccountOverview";
+import JournalsPage from "./pages/JournalsPage";
+import JournalDetailPage from "./pages/JournalDetailsPage";
+import AiFeedbackPage from "./pages/AiFeedbackPage";
 
 function App() {
   const dispatch = useDispatch<AppDispatch>();
@@ -58,6 +62,13 @@ function App() {
         <Route path="/authsuccess" element={<AuthSuccess />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/accounts/:id" element={<AccountPage />} />
+        <Route path="/accounts/:id/overview" element={<AccountOverview />} />
+        <Route path="/accounts/:id/journals" element={<JournalsPage />} />
+        <Route
+          path="/accounts/:id/journals/:journalId"
+          element={<JournalDetailPage />}
+        />
+        <Route path="/accounts/:id/ai-feedback" element={<AiFeedbackPage />} />
       </Routes>
 
       <ToastContainer />

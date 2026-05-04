@@ -110,6 +110,8 @@ async function liquidateAccount(accountId: string): Promise<void> {
             quantity: 0,
             marginUsed: 0,
             realizedPnl: { increment: realizedPnl },
+            closedAt:new Date()
+            
           },
         });
 
