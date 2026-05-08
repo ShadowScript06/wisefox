@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE "Account" ALTER COLUMN "charges" SET DEFAULT 0,
+ALTER COLUMN "netPnl" SET DEFAULT 0;

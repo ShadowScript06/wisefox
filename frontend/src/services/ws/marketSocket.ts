@@ -1,0 +1,69 @@
+
+import { addAlert } from "../../redux/alertSlice";
+import { updatePrices } from "../../redux/marketPriceSlice";
+import { add } from "../../redux/notificationSlice";
+import { setPositions } from "../../redux/positionsSlice";
+import type { AppDispatch } from "../../redux/store";
+
+let socket: WebSocket | null = null;
+
+export function openWS(dispatch: AppDispatch) {
+  socket = new WebSocket("wss://wisefox-stcn.onrender.com");
+
+  socket.onopen = () => {
+    console.log("WS connected");
+  };
+
+  socket.onmessage = (event) => {
+    try {
+      const msg = JSON.parse(event.data);
+
+      switch (msg.type) {
+        case "SNAPSHOT":
+        case "TICK":
+          dispatch(updatePrices(msg.data));
+          break;
+
+        case "PNL_UPDATE":
+          dispatch(setPositions(msg.data));
+          break;
+
+        case "LIQUIDATED": {
+          dispatch(add(msg));
+          break;
+        }
+
+        case "MARGIN_CALL": {
+          dispatch(add(msg));
+          break;
+        }
+
+        case "ALERT_TRIGGERED": {
+          dispatch(add(msg));
+          dispatch(addAlert(msg.data.id))
+          break;
+        }
+        default:
+          console.log("Unknown WS msg:", msg.type);
+      }
+    } catch (error) {
+      console.log("WS error:", error);
+    }
+  };
+
+  socket.onerror = (err) => {
+    console.log("WS error:", err);
+  };
+
+  socket.onclose = () => {
+    console.log("WS closed");
+  };
+}
+
+export function closeWS() {
+  if (socket && socket.readyState === WebSocket.OPEN) {
+    socket.close(1000, "Client closed connection");
+    socket = null;
+    console.log("WS closing initiated");
+  }
+}
